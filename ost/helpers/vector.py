@@ -3,6 +3,7 @@ import sys
 import json
 from functools import partial
 
+import osr
 import ogr
 import pyproj
 import geopandas as gpd
@@ -63,6 +64,14 @@ def get_proj4(prjfile):
     srs = osr.SpatialReference()
     srs.ImportFromESRI([prj_string])
     return srs.ExportToProj4()
+
+
+def epsg_to_wkt_projection(epsg_code):
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg_code)
+
+    return spatial_ref.ExpotToWkt()
 
 
 def reproject_geometry(geom, inproj4, out_epsg):
@@ -271,18 +280,20 @@ def wkt_to_gdf(wkt):
         data = {'id': ['1'],
                 'geometry': loads(wkt)}
         gdf = gpd.GeoDataFrame(data)
-        
-        # split the different elemets and put into single features
-        ids, feats =[], []
-        for i, feat in enumerate(gdf.geometry.values[0]):
-            ids.append(i)
-            feats.append(feat)
 
-        gdf = gpd.GeoDataFrame({'id': ids,
-                                'geometry': feats}, 
-                                    geometry='geometry', 
-                                    crs = gdf.crs
-                                    )
+        # split the different elemets and put into single features
+        if len(gdf) > 1:
+            ids, feats =[], []
+
+            for i, feat in enumerate(gdf.geometry.values[0]):
+                ids.append(i)
+                feats.append(feat)
+
+            gdf = gpd.GeoDataFrame({'id': ids,
+                                    'geometry': feats},
+                                        geometry='geometry',
+                                        crs = gdf.crs
+                                        )
     else:
 
         i, ids, geoms = 1, [], []
@@ -306,9 +317,9 @@ def wkt_to_shp(wkt, outfile):
 
 
 def gdf_to_json_geometry(gdf):
-    """Function to parse features from GeoDataFrame in such a manner 
+    """Function to parse features from GeoDataFrame in such a manner
        that rasterio wants them"""
-#    
+#
 #    try:
 #        gdf.geometry.values[0].type
 #        features = [json.loads(gdf.to_json())['features'][0]['geometry']]
@@ -319,12 +330,12 @@ def gdf_to_json_geometry(gdf):
 #            feats.append(feat)
 #
 #        gdf = gpd.GeoDataFrame({'id': ids,
-#                                'geometry': feats}, 
-#                                    geometry='geometry', 
+#                                'geometry': feats},
+#                                    geometry='geometry',
 #                                    crs = gdf.crs
 #                                    )
     geojson = json.loads(gdf.to_json())
-    return [feature['geometry'] for feature in geojson['features'] 
+    return [feature['geometry'] for feature in geojson['features']
             if feature['geometry']]
 
 

@@ -160,7 +160,7 @@ def refine_burst_inventory(aoi, burst_gdf, outfile, coverages=None):
 
 def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
                        temp_dir, proc_file, data_mount='/eodata', 
-                       exec_file=None):
+                       exec_file=None,ncores=os.cpu_count()):
     '''Handles the batch processing of a OST complinat burst inventory file
 
     Args:
@@ -253,22 +253,40 @@ def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
     
                 # just write command into a textfile
                 if exec_file:
-                    # remove older files in case they exist
-                    if os.path.isfile(exec_file):
-                        os.remove(exec_file)
+                    # remove older files in case they exist - need a better way than this as we would like to append to
+                    # a text file which can then be read line by line
+                    #if os.path.isfile(exec_file):
+                    #    os.remove(exec_file)
                     # construct command arguments
-                    args = ('-m {} -ms {} -mn {} -mi {} -p {} -o {} -t {} '
-                            '-s {} -sn {} -si {} -c {} -r {}').format(
+                    '''args = ('-m {} -ms {} -mn {} -mi {} -p {} -o {} -t {} '
+                            '-s {} -sn {} -si {} -c {} -r {} -nc {}').format(
                                   master_file, subswath, master_burst_nr, master_id, 
                                   proc_file, out_dir, temp_dir, 
                                   slave_file, slave_burst_nr, slave_id, 
-                                  coherence, False)                                
+                                  coherence, False, ncores)                                
                     
                     # get path to graph
                     rootpath = imp.find_module('ost')[1]
                     python_exe = opj(rootpath, 's1', 'burst_to_ard.py')
                     with open(exec_file, 'a') as exe:
-                        exe.write('{} {} \n'.format(python_exe, args))
+                        exe.write('{} {} \n'.format(python_exe, args))'''
+
+                    parallel_temp_dir=temp_dir+'/temp_'+burst+'_'+date
+                    os.makedirs(parallel_temp_dir, exist_ok=True)
+
+                    args = ('{},{},{},{},{},{},{},{},{},{},{},{},{}').format(
+                                  master_file, subswath, master_burst_nr, master_id,
+                                  proc_file, out_dir, parallel_temp_dir,
+                                  slave_file, slave_burst_nr, slave_id,
+                                  coherence, False, ncores)
+
+                    # get path to graph
+                    #rootpath = imp.find_module('ost')[1]
+                    #python_exe = opj(rootpath, 's1', 'burst_to_ard.py')
+                    exec_burst_to_ard=exec_file+'_burst_to_ard.txt'
+                    with open(exec_burst_to_ard, 'a') as exe:
+                        exe.write('{}\n'.format(args))
+
                 
                 # run the command      
                 else:
@@ -289,7 +307,7 @@ def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
             
             
 def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
-                             proc_file, exec_file=None):
+                             proc_file, exec_file=None, ncores=os.cpu_count()):
 
     # load ard parameters
     with open(proc_file, 'r') as ard_file:
@@ -374,14 +392,26 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
             
             # placeholder for parallelisation
             if exec_file:
-                if os.path.isfile(exec_file):
-                    os.remove(exec_file)
-                
-                print('create command')
+                #if os.path.isfile(exec_file):
+                #    os.remove(exec_file)
+                parallel_temp_dir = temp_dir + '/temp_' + burst + '_timeseries'
+                os.makedirs(parallel_temp_dir, exist_ok=True)
+
+                args = ('{},{},{},{},{},{},{},{}').format(
+                    list_of_dims, processing_dir, parallel_temp_dir,
+                    burst, proc_file, product, pol, ncores)
+
+                # get path to graph
+                #rootpath = imp.find_module('ost')[1]
+                #python_exe = opj(rootpath, 's1', 'ard_to_ts.py')
+                exec_timeseries=exec_file+'_timeseries.txt'
+                with open(exec_timeseries, 'a') as exe:
+                    exe.write('{}\n'.format(args))
                 continue
             
             # run processing
-            ard_to_ts.ard_to_ts(
+            else:
+                ard_to_ts.ard_to_ts(
                             list_of_dims, 
                             processing_dir, 
                             temp_dir, 
@@ -395,7 +425,7 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
 # timescan part
 # --------------------
 def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir, 
-                           proc_file, exec_file=None):
+                           proc_file, exec_file=None, ncores=os.cpu_count()):
     '''Function to create a timescan out of a OST timeseries.
 
     '''
@@ -468,10 +498,26 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
             
             # placeholder for parallelisation
             if exec_file:
+                # if os.path.isfile(exec_file):
+                #    os.remove(exec_file)
+                #parallel_temp_dir = temp_dir + '/temp_' + burst + '_timescan'
+                #os.makedirs(parallel_temp_dir, exist_ok=True)
+
+                args = ('{},{},{},{},{},{},{},{}').format(
+                    timeseries, timescan_prefix, ard_tscan['metrics'],
+                    rescale, to_power, ard_tscan['remove outliers'], datelist, ncores)
+
+                # get path to graph
+                # rootpath = imp.find_module('ost')[1]
+                # python_exe = opj(rootpath, 's1', 'timescan.py')
+                exec_tscan=exec_file+'_tscan.txt'
+                with open(exec_tscan, 'a') as exe:
+                    exe.write('{}\n'.format(args))
                 continue
-            
+
             # run command
-            timescan.mt_metrics(
+            else:
+                timescan.mt_metrics(
                     timeseries, 
                     timescan_prefix, 
                     ard_tscan['metrics'],
@@ -483,7 +529,11 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
         
         if not exec_file:
             ras.create_tscan_vrt(timescan_dir, proc_file)
-
+        else:
+            exec_tscan_vrt=exec_file+'_tscan_vrt.txt'
+            with open(exec_tscan_vrt, 'a') as exe:
+                exe.write('{},{}\n'.format(timescan_dir, proc_file))
+            continue
 
 def mosaic_timeseries(burst_inventory, processing_dir, temp_dir, 
                       cut_to_aoi=False, exec_file=None):
@@ -557,23 +607,40 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
                 print( 'INFO: Mosaic layer {} already'
                        ' processed.'.format(outfile))
                 continue
+            if exec_file:
+                parallel_temp_dir = temp_dir + '/temp_' + product + '_'+i+'_mosaic_timeseries'
+                os.makedirs(parallel_temp_dir, exist_ok=True)
+                args = ('{},{},{},{}').format(
+                    filelist, outfile, parallel_temp_dir, cut_to_aoi)
 
-            # the command
-            print(' INFO: Mosaicking layer {}.'.format(os.path.basename(outfile)))
-            mosaic.mosaic(filelist, outfile, temp_dir, cut_to_aoi)
+                # get path to graph
+                # rootpath = imp.find_module('ost')[1]
+                # python_exe = opj(rootpath, 'mosaic', 'mosaic.py')
+                exec_mosaic_timeseries = exec_file + '_mosaic_timeseries.txt'
+                with open(exec_mosaic_timeseries, 'a') as exe:
+                    exe.write('{}\n'.format(args))
+                continue
+            else:
+                # the command
+                print(' INFO: Mosaicking layer {}.'.format(os.path.basename(outfile)))
+                mosaic.mosaic(filelist, outfile, temp_dir, cut_to_aoi)
 
         # create vrt
-        if exec_file:
+        if not exec_file:
+            # create final vrt
+            vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
+            gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
+                          outfiles,
+                          options=vrt_options)
+        else:
+            # create vrt exec file
+            exec_mosaic_ts_vrt = exec_file + '_mosaic_ts_vrt.txt'
+            with open(exec_mosaic_ts_vrt, 'a') as exe:
+                exe.write('{},{},{}\n'.format(ts_dir, product, outfiles))
             continue
-        
-        # create final vrt
-        vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
-        gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
-                      outfiles,
-                      options=vrt_options)
 
 
-def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file, 
+def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
                     cut_to_aoi=False, exec_file=None):
 
     
@@ -622,13 +689,31 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
             print(' INFO: Mosaic layer {} already '
                   ' processed.'.format(os.path.basename(outfile)))
             continue
+        if exec_file:
+            parallel_temp_dir = temp_dir + '/temp_' + product + '_mosaic_tscan'
+            os.makedirs(parallel_temp_dir, exist_ok=True)
+            args = ('{},{},{},{}').format(
+                filelist, outfile, parallel_temp_dir, cut_to_aoi)
 
-        print(' INFO: Mosaicking layer {}.'.format(os.path.basename(outfile)))
-        mosaic.mosaic(filelist, outfile, temp_dir, cut_to_aoi)
-        outfiles.append(outfile)
+            # get path to graph
+            # rootpath = imp.find_module('ost')[1]
+            # python_exe = opj(rootpath, 'mosaic', 'mosaic.py')
+            exec_mosaic_timescan = exec_file + '_mosaic_tscan.txt'
+            with open(exec_mosaic_timescan, 'a') as exe:
+                exe.write('{}\n'.format(args))
+            continue
+        else:
+            print(' INFO: Mosaicking layer {}.'.format(os.path.basename(outfile)))
+            mosaic.mosaic(filelist, outfile, temp_dir, cut_to_aoi)
+            outfiles.append(outfile)
 
-    if exec_file:
-        print(' gdalbuildvrt ....command, outfiles')
-    else:
+    if not exec_file:
         # create vrt
         ras.create_tscan_vrt(tscan_dir, proc_file)
+
+    else:
+        #create vrt exec file
+        exec_mosaic_tscan_vrt = exec_file + '_mosaic_tscan_vrt.txt'
+        with open(exec_mosaic_tscan_vrt, 'a') as exe:
+            exe.write('{},{}\n'.format(timescan_dir, proc_file))
+        continue
