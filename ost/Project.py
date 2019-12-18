@@ -485,7 +485,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                      overwrite=False, exec_file=None, cut_to_aoi=False, ncores=os.cpu_count()):
         if exec_file:
             if [n for n in glob.glob(exec_file+'*') if os.path.isfile(n)]:
-                os.remove(exec_file+'*')
+                os.remove(glob.glob(exec_file+'*'))
         # in case ard parameters have been updated, write them to json file
         self.update_ard_parameters()
         
