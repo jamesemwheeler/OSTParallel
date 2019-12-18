@@ -586,6 +586,7 @@ class Sentinel1_SLCBatch(Sentinel1):
         Exec files should be recreated at each step to add parameters such as filenames, extents, that have been
         generated at previous steps
         '''
+        from ost.s1 import burst_to_ard
         #list exec files
         exec_burst_to_ard = exec_file + '_burst_to_ard.txt'
         exec_timeseries = exec_file + '_timeseries.txt'
@@ -600,11 +601,13 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         #test existence of burst to ard exec files and run them in parallel
         if os.path.isfile(exec_burst_to_ard):
+            from ost.s1 import burst_to_ard
             burst_ard_params = []
             with open(exec_burst_to_ard, "r") as fp:
                 burst_ard_params = [line.strip() for line in fp]
             fp.close()
             def run_burst_ard_multiprocess(params):
+                from ost.s1 import burst_to_ard
                 burst_to_ard.burst_to_ard(*params.split(','))
             pool = multiprocessing.Pool(processes=multiproc)
             pool.map(run_burst_ard_multiprocess, burst_ard_params)
