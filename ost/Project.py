@@ -14,6 +14,7 @@ from os.path import join as opj
 from datetime import datetime
 from shapely.wkt import loads
 import gdal
+from joblib import Parallel, delayed
 from ost.helpers import vector as vec, raster as ras
 from ost.s1 import search, refine, download, burst, grd_batch, burst_to_ard
 from ost.helpers import scihub, helpers as h
@@ -607,11 +608,14 @@ class Sentinel1_SLCBatch(Sentinel1):
                 burst_ard_params = [line.strip() for line in fp]
             fp.close()
 
-            def run_burst_ard_multiprocess(params):
-                from ost.s1 import burst_to_ard
-                burst_to_ard.burst_to_ard(*params.split(','))
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_burst_ard_multiprocess, burst_ard_params)
+            #def run_burst_ard_multiprocess(params):
+            #    from ost.s1 import burst_to_ard
+            #    burst_to_ard.burst_to_ard(*params.split(','))
+
+            Parallel(n_jobs=multiproc)(delayed(burst_to_ard.burst_to_ard)(*params.split(',')) for params in burst_ard_params)
+
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_burst_ard_multiprocess, burst_ard_params)
 
         # test existence of multitemporal extent exec files and run them in parallel
         if timeseries:
