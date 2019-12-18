@@ -736,5 +736,5 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
         #create vrt exec file
         exec_mosaic_tscan_vrt = exec_file + '_mosaic_tscan_vrt.txt'
         with open(exec_mosaic_tscan_vrt, 'a') as exe:
-            exe.write('{},{}\n'.format(timescan_dir, proc_file))
+            exe.write('{},{}\n'.format(tscan_dir, proc_file))
 
