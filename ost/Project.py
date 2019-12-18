@@ -576,6 +576,15 @@ class Sentinel1_SLCBatch(Sentinel1):
         ras.create_timeseries_animation(timeseries_dir, product_list, outfile, 
                                     shrink_factor=1, duration=1, 
                                     add_dates=False)
+
+    def run_burst_ard_multiprocess(params):
+
+        burst_to_ard.burst_to_ard(*params.split(','))
+
+    def run_mt_extent_multiprocess(params):
+
+        common_extent.mt_extent(*params.split(','))
+
     def multiprocess(self, timeseries=False, timescan=False, mosaic=False,
                      overwrite=False, exec_file=None, cut_to_aoi=False, ncores=os.cpu_count(), multiproc=os.cpu_count()):
         '''
@@ -606,9 +615,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             with open(exec_burst_to_ard, "r") as fp:
                 burst_ard_params = [line.strip() for line in fp]
             fp.close()
-            def run_burst_ard_multiprocess(params):
-                from ost.s1 import burst_to_ard
-                burst_to_ard.burst_to_ard(*params.split(','))
+
             pool = multiprocessing.Pool(processes=multiproc)
             pool.map(run_burst_ard_multiprocess, burst_ard_params)
 
@@ -621,9 +628,6 @@ class Sentinel1_SLCBatch(Sentinel1):
                 mt_extent_params = [line.strip() for line in fp]
             fp.close()
 
-            def run_mt_extent_multiprocess(params):
-                from ost.multitemporal import common_extent
-                common_extent.mt_extent(*params.split(','))
 
             pool = multiprocessing.Pool(processes=multiproc)
             pool.map(run_mt_extent_multiprocess, mt_extent_params)
