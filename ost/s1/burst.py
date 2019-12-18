@@ -379,8 +379,8 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                 # get path to graph
                 # rootpath = imp.find_module('ost')[1]
                 # python_exe = opj(rootpath, 's1', 'ard_to_ts.py')
-                exec_timeseries = exec_file + '_timeseries.txt'
-                with open(exec_timeseries, 'a') as exe:
+                exec_mt_ls = exec_file + '_mt_ls.txt'
+                with open(exec_mt_ls, 'a') as exe:
                     exe.write('{}\n'.format(args))
             else:
                 print(' INFO: Creating common Layover/Shadow mask'
