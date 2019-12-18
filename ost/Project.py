@@ -608,11 +608,12 @@ class Sentinel1_SLCBatch(Sentinel1):
                 burst_ard_params = [line.strip() for line in fp]
             fp.close()
 
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
             #def run_burst_ard_multiprocess(params):
             #    from ost.s1 import burst_to_ard
             #    burst_to_ard.burst_to_ard(*params.split(','))
 
-            Parallel(n_jobs=multiproc)(delayed(burst_to_ard.burst_to_ard)(*params.split(',')) for params in burst_ard_params)
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(burst_to_ard.burst_to_ard)(*params.split(',')) for params in burst_ard_params)
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_burst_ard_multiprocess, burst_ard_params)
@@ -626,12 +627,14 @@ class Sentinel1_SLCBatch(Sentinel1):
                 mt_extent_params = [line.strip() for line in fp]
             fp.close()
 
-            def run_mt_extent_multiprocess(params):
-                from ost.multitemporal import common_extent
-                common_extent.mt_extent(*params.split(','))
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            #def run_mt_extent_multiprocess(params):
+            #    from ost.multitemporal import common_extent
+            #    common_extent.mt_extent(*params.split(','))
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(common_extent.mt_extent)(*params.split(',')) for params in mt_extent_params)
 
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_mt_extent_multiprocess, mt_extent_params)
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_mt_extent_multiprocess, mt_extent_params)
 
         # test existence of multitemporal layover shadow generation exec files and run them in parallel
         if os.path.isfile(exec_mt_ls):
@@ -642,12 +645,14 @@ class Sentinel1_SLCBatch(Sentinel1):
                 mt_ls_params = [line.strip() for line in fp]
             fp.close()
 
-            def run_mt_ls_multiprocess(params):
-                from ost.multitemporal import common_ls_mask
-                common_ls_mask.mt_layover(*params.split(','))
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            #def run_mt_ls_multiprocess(params):
+            #    from ost.multitemporal import common_ls_mask
+            #    common_ls_mask.mt_layover(*params.split(','))
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(common_ls_mask.mt_layover)(*params.split(',')) for params in mt_ls_params)
 
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_mt_ls_multiprocess, mt_ls_params)
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_mt_ls_multiprocess, mt_ls_params)
 
         #test existence of ard to timeseries exec files and run them in parallel
         if timeseries:
@@ -657,11 +662,14 @@ class Sentinel1_SLCBatch(Sentinel1):
             with open(exec_timeseries, "r") as fp:
                 timeseries_params = [line.strip() for line in fp]
             fp.close()
-            def run_timeseries_multiprocess(params):
-                from ost.multitemporal import ard_to_ts
-                ard_to_ts.ard_to_ts(*params.split(','))
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_timeseries_multiprocess, timeseries_params)
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            #def run_timeseries_multiprocess(params):
+            #   from ost.multitemporal import ard_to_ts
+            #   ard_to_ts.ard_to_ts(*params.split(','))
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(ard_to_ts.ard_to_ts)(*params.split(',')) for params in timeseries_params)
+
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_timeseries_multiprocess, timeseries_params)
 
         #test existence of timescan exec files and run them in parallel
         if timeseries and timescan:
@@ -671,11 +679,15 @@ class Sentinel1_SLCBatch(Sentinel1):
             with open(exec_tscan, "r") as fp:
                 tscan_params = [line.strip() for line in fp]
             fp.close()
-            def run_tscan_multiprocess(params):
-                from ost.multitemporal import timescan
-                timescan.mt_metrics(*params.split(','))
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_tscan_multiprocess, tscan_params)
+
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(timescan.mt_metrics)(*params.split(',')) for params in tscan_params)
+
+           # def run_tscan_multiprocess(params):
+           #     from ost.multitemporal import timescan
+           #     timescan.mt_metrics(*params.split(','))
+           # pool = multiprocessing.Pool(processes=multiproc)
+           # pool.map(run_tscan_multiprocess, tscan_params)
 
         #test existence of timescan vrt exec files and run them in parallel
         if timeseries and timescan:
@@ -685,11 +697,13 @@ class Sentinel1_SLCBatch(Sentinel1):
             with open(exec_tscan_vrt, "r") as fp:
                 tscan_vrt_params = [line.strip() for line in fp]
             fp.close()
-            def run_tscan_vrt_multiprocess(params):
-                from ost.helpers import raster as ras
-                ras.create_tscan_vrt(*params.split(','))
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_tscan_vrt_multiprocess, tscan_vrt_params)
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(ras.create_tscan_vrt)(*params.split(',')) for params in tscan_vrt_params)
+            #def run_tscan_vrt_multiprocess(params):
+            #    from ost.helpers import raster as ras
+            #    ras.create_tscan_vrt(*params.split(','))
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_tscan_vrt_multiprocess, tscan_vrt_params)
 
         # test existence of mosaic timeseries exec files and run them in parallel
         if mosaic and timeseries:
@@ -701,12 +715,14 @@ class Sentinel1_SLCBatch(Sentinel1):
                 mosaic_timeseries_params = [line.strip() for line in fp]
             fp.close()
 
-            def run_mosaic_timeseries_multiprocess(params):
-                from ost.mosaic import mosaic
-                mosaic.mosaic(*params.split(','))
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(mosaic.mosaic)(*params.split(',')) for params in mosaic_timeseries_params)
+            #def run_mosaic_timeseries_multiprocess(params):
+            #    from ost.mosaic import mosaic
+            #    mosaic.mosaic(*params.split(','))
 
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_mosaic_timeseries_multiprocess, mosaic_timeseries_params)
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_mosaic_timeseries_multiprocess, mosaic_timeseries_params)
 
         # test existence of mosaic timeseries vrt exec files and run them in parallel
         if mosaic and timeseries:
@@ -716,17 +732,25 @@ class Sentinel1_SLCBatch(Sentinel1):
             with open(exec_mosaic_ts_vrt, "r") as fp:
                 mosaic_ts_vrt_params = [line.strip() for line in fp]
             fp.close()
-
             def run_mosaic_ts_vrt_multiprocess(params):
-                import gdal
                 vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
                 ts_dir, product, outfiles = params.split(',')
                 gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
                               outfiles,
                               options=vrt_options)
 
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_mosaic_ts_vrt_multiprocess, mosaic_ts_vrt_params)
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(run_mosaic_ts_vrt_multiprocess)(params) for params in mosaic_ts_vrt_params)
+
+            #def run_mosaic_ts_vrt_multiprocess(params):
+            #    vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
+            #    ts_dir, product, outfiles = params.split(',')
+            #    gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
+            #                  outfiles,
+            #                  options=vrt_options)
+
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_mosaic_ts_vrt_multiprocess, mosaic_ts_vrt_params)
 
         # test existence of mosaic timescan exec files and run them in parallel
         if mosaic and timescan:
@@ -738,12 +762,14 @@ class Sentinel1_SLCBatch(Sentinel1):
                 mosaic_timescan_params = [line.strip() for line in fp]
             fp.close()
 
-            def run_mosaic_timescan_multiprocess(params):
-                from ost.mosaic import mosaic
-                mosaic.mosaic(*params.split(','))
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(mosaic.mosaic)(*params.split(',')) for params in mosaic_timescan_params)
+            #def run_mosaic_timescan_multiprocess(params):
+            #    from ost.mosaic import mosaic
+            #    mosaic.mosaic(*params.split(','))
 
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_mosaic_timescan_multiprocess, mosaic_timeseries_params)
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_mosaic_timescan_multiprocess, mosaic_timescan_params)
 
         # test existence of mosaic timescan vrt exec files and run them in parallel
         if mosaic and timescan:
@@ -755,12 +781,14 @@ class Sentinel1_SLCBatch(Sentinel1):
                 mosaic_tscan_vrt_params = [line.strip() for line in fp]
             fp.close()
 
-            def run_mosaic_tscan_vrt_multiprocess(params):
-                from ost.helpers import raster as ras
-                ras.create_tscan_vrt(*params.split(','))
+            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+            Parallel(n_jobs=multiproc, verbose=53)(delayed(ras.create_tscan_vrt)(*params.split(',')) for params in mosaic_tscan_vrt_params)
+            #def run_mosaic_tscan_vrt_multiprocess(params):
+            #    from ost.helpers import raster as ras
+            #    ras.create_tscan_vrt(*params.split(','))
 
-            pool = multiprocessing.Pool(processes=multiproc)
-            pool.map(run_mosaic_tscan_vrt_multiprocess, mosaic_tscan_vrt_params)
+            #pool = multiprocessing.Pool(processes=multiproc)
+            #pool.map(run_mosaic_tscan_vrt_multiprocess, mosaic_tscan_vrt_params)
 
 
 
