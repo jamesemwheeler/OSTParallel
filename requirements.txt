@@ -13,3 +13,4 @@ scipy
 shapely
 tqdm
 imageio
+joblib
