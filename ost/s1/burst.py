@@ -331,13 +331,25 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
         
         # placeholder for parallelisation
         if exec_file:
-            if os.path.isfile(exec_file):
-                os.remove(exec_file)
-            print('create command')
-            continue
+            parallel_temp_dir = temp_dir + '/temp_' + burst + '_mt_extent'
+            os.makedirs(parallel_temp_dir, exist_ok=True)
+
+            args = ('{},{},{},{}').format(
+                list_of_bursts, extent, parallel_temp_dir, -0.0018)
+
+            # get path to graph
+            # rootpath = imp.find_module('ost')[1]
+            # python_exe = opj(rootpath, 's1', 'ard_to_ts.py')
+            exec_mt_extent = exec_file + '_mt_extent.txt'
+            with open(exec_mt_extent, 'a') as exe:
+                exe.write('{}\n'.format(args))
+            #if os.path.isfile(exec_file):
+            #    os.remove(exec_file)
+            #print('create command')
         
-        print(' INFO: Creating common extent mask for burst {}'.format(burst))
-        common_extent.mt_extent(list_of_bursts, extent, temp_dir, -0.0018)
+        else:
+            print(' INFO: Creating common extent mask for burst {}'.format(burst))
+            common_extent.mt_extent(list_of_bursts, extent, temp_dir, -0.0018)
       
     if ard['create ls mask'] or ard['apply ls mask']: 
         
@@ -356,10 +368,24 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
 
             if os.path.isfile(out_ls):
                 continue
+            if exec_file:
+                parallel_temp_dir = temp_dir + '/temp_' + burst + '_ls_mask'
+                os.makedirs(parallel_temp_dir, exist_ok=True)
 
-            print(' INFO: Creating common Layover/Shadow mask'
-                  ' for burst {}'.format(burst))
-            common_ls_mask.mt_layover(list_of_layover, out_ls, temp_dir, 
+                args = ('{},{},{},{},{}').format(
+                    list_of_layover, out_ls, parallel_temp_dir,
+                    extent, ard_mt['apply ls mask'])
+
+                # get path to graph
+                # rootpath = imp.find_module('ost')[1]
+                # python_exe = opj(rootpath, 's1', 'ard_to_ts.py')
+                exec_timeseries = exec_file + '_timeseries.txt'
+                with open(exec_timeseries, 'a') as exe:
+                    exe.write('{}\n'.format(args))
+            else:
+                print(' INFO: Creating common Layover/Shadow mask'
+                    ' for burst {}'.format(burst))
+                common_ls_mask.mt_layover(list_of_layover, out_ls, temp_dir,
                                       extent, ard_mt['apply ls mask'])
         
     # create timeseries
@@ -407,7 +433,6 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                 exec_timeseries=exec_file+'_timeseries.txt'
                 with open(exec_timeseries, 'a') as exe:
                     exe.write('{}\n'.format(args))
-                continue
             
             # run processing
             else:
@@ -513,7 +538,6 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
                 exec_tscan=exec_file+'_tscan.txt'
                 with open(exec_tscan, 'a') as exe:
                     exe.write('{}\n'.format(args))
-                continue
 
             # run command
             else:
@@ -533,7 +557,7 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
             exec_tscan_vrt=exec_file+'_tscan_vrt.txt'
             with open(exec_tscan_vrt, 'a') as exe:
                 exe.write('{},{}\n'.format(timescan_dir, proc_file))
-            continue
+
 
 def mosaic_timeseries(burst_inventory, processing_dir, temp_dir, 
                       cut_to_aoi=False, exec_file=None):
@@ -619,7 +643,6 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
                 exec_mosaic_timeseries = exec_file + '_mosaic_timeseries.txt'
                 with open(exec_mosaic_timeseries, 'a') as exe:
                     exe.write('{}\n'.format(args))
-                continue
             else:
                 # the command
                 print(' INFO: Mosaicking layer {}.'.format(os.path.basename(outfile)))
@@ -637,7 +660,6 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
             exec_mosaic_ts_vrt = exec_file + '_mosaic_ts_vrt.txt'
             with open(exec_mosaic_ts_vrt, 'a') as exe:
                 exe.write('{},{},{}\n'.format(ts_dir, product, outfiles))
-            continue
 
 
 def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
@@ -701,7 +723,6 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
             exec_mosaic_timescan = exec_file + '_mosaic_tscan.txt'
             with open(exec_mosaic_timescan, 'a') as exe:
                 exe.write('{}\n'.format(args))
-            continue
         else:
             print(' INFO: Mosaicking layer {}.'.format(os.path.basename(outfile)))
             mosaic.mosaic(filelist, outfile, temp_dir, cut_to_aoi)

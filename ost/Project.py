@@ -590,6 +590,8 @@ class Sentinel1_SLCBatch(Sentinel1):
         exec_mosaic_ts_vrt = exec_file + '_mosaic_ts_vrt.txt'
         exec_mosaic_timescan = exec_file + '_mosaic_tscan.txt'
         exec_mosaic_tscan_vrt = exec_file + '_mosaic_tscan_vrt.txt'
+        exec_mt_extent = exec_file + '_mt_extent.txt'
+        exec_mt_ls = exec_file + '_mt_ls.txt'
 
         #test existence of burst to ard exec files and run them in parallel
         if os.path.isfile(exec_burst_to_ard):
@@ -690,6 +692,32 @@ class Sentinel1_SLCBatch(Sentinel1):
 
             pool = multiprocessing.Pool(processes=multiproc)
             pool.map(run_mosaic_tscan_vrt_multiprocess, mosaic_tscan_vrt_params)
+
+        # test existence of multitemporal extent exec files and run them in parallel
+        if os.path.isfile(exec_mt_extent):
+            mt_extent_params = []
+            with open(exec_mt_extent, "r") as fp:
+                mt_extent_params = [line.strip() for line in fp]
+            fp.close()
+
+            def run_mt_extent_multiprocess(params):
+                common_extent.mt_extent(*params.split(','))
+
+            pool = multiprocessing.Pool(processes=multiproc)
+            pool.map(run_mt_extent_multiprocess, mt_extent_params)
+
+        # test existence of multitemporal layover shadow generation exec files and run them in parallel
+        if os.path.isfile(exec_mt_ls):
+            mt_ls_params = []
+            with open(exec_mt_ls, "r") as fp:
+                mt_ls_params = [line.strip() for line in fp]
+            fp.close()
+
+            def run_mt_ls_multiprocess(params):
+                common_ls_mask.mt_layover(*params.split(','))
+
+            pool = multiprocessing.Pool(processes=multiproc)
+            pool.map(run_mt_ls_multiprocess, mt_ls_params)
 
 
 class Sentinel1_GRDBatch(Sentinel1):
