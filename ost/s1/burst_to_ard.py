@@ -822,20 +822,21 @@ def burst_to_ard(master_file,
  
     # ---------------------------------------------------------------------
     # 8 Geocode backscatter
-    out_tc = opj(temp_dir, '{}_bs'.format(master_burst_id))
-    tc_log = opj(out_dir, '{}_bs_tc.err_log'.format(master_burst_id))
-    return_code = common._terrain_correction(
-        '{}.dim'.format(out_cal), out_tc, tc_log, 
-        ard['resolution'], ard['dem'], ncores)
+    if ard['product type'] != "Coherence_only":
+        out_tc = opj(temp_dir, '{}_bs'.format(master_burst_id))
+        tc_log = opj(out_dir, '{}_bs_tc.err_log'.format(master_burst_id))
+        return_code = common._terrain_correction(
+            '{}.dim'.format(out_cal), out_tc, tc_log,
+            ard['resolution'], ard['dem'], ncores)
 
-    # last check on backscatter data
-    return_code = h.check_out_dimap(out_tc)
-    if return_code != 0:
-        h.delete_dimap(out_tc)
-        return return_code
+        # last check on backscatter data
+        return_code = h.check_out_dimap(out_tc)
+        if return_code != 0:
+            h.delete_dimap(out_tc)
+            return return_code
 
-    # we move backscatter to final destination
-    h.move_dimap(out_tc, opj(out_dir, '{}_bs'.format(master_burst_id)))
+        # we move backscatter to final destination
+        h.move_dimap(out_tc, opj(out_dir, '{}_bs'.format(master_burst_id)))
 
     # ---------------------------------------------------------------------
     # 9 Layover/Shadow mask
@@ -859,7 +860,8 @@ def burst_to_ard(master_file,
         h.move_dimap(out_ls, opj(out_dir, '{}_LS'.format(master_burst_id)))
 
     # remove calibrated files
-    h.delete_dimap(out_cal)
+    if ard['product type'] != "Coherence_only":
+        h.delete_dimap(out_cal)
 
     if coherence:
 
