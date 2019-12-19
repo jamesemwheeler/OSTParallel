@@ -178,7 +178,8 @@ def _calibration(infile, outfile, logfile, product_type='GTCgamma',ncores=os.cpu
                     'S1_SLC_TNR_CalSigma_Deb.xml')
     elif product_type == 'Coherence_only':
         print('INFO: No need to calibrate just for coherence')
-        return
+        return_code=0
+        return return_code
     else:
         print(' ERROR: Wrong product type selected.')
         sys.exit(121)
