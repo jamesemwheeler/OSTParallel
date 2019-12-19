@@ -511,26 +511,38 @@ class Sentinel1_SLCBatch(Sentinel1):
             glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
 
         # check and retry function
-        i = 0
-        while len(self.burst_inventory) > nr_of_processed:
-
+        if exec_file:
+            [os.remove(n) for n in glob.glob(exec_file+'*') if os.path.isfile(n)]
             burst.burst_to_ard_batch(self.burst_inventory,
                                      self.download_dir,
                                      self.processing_dir,
                                      self.temp_dir,
                                      self.proc_file,
-                                     self.data_mount, 
+                                     self.data_mount,
                                      exec_file,
                                      ncores)
 
-            nr_of_processed = len(
-                glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
+        else:
+            i = 0
+            while len(self.burst_inventory) > nr_of_processed:
 
-            i += 1
+                burst.burst_to_ard_batch(self.burst_inventory,
+                                         self.download_dir,
+                                         self.processing_dir,
+                                         self.temp_dir,
+                                         self.proc_file,
+                                         self.data_mount,
+                                         exec_file,
+                                         ncores)
 
-            # not more than 5 trys
-            if i == 5:
-                break
+                nr_of_processed = len(
+                    glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
+
+                i += 1
+
+                # not more than 5 trys
+                if i == 5:
+                    break
 
         # do we delete the downloads here?
         if timeseries or timescan:
@@ -612,8 +624,22 @@ class Sentinel1_SLCBatch(Sentinel1):
             #def run_burst_ard_multiprocess(params):
             #    from ost.s1 import burst_to_ard
             #    burst_to_ard.burst_to_ard(*params.split(','))
+            nr_of_processed = len(
+                glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
 
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(burst_to_ard.burst_to_ard)(*params.split(',')) for params in burst_ard_params)
+            i = 0
+            while len(self.burst_inventory) > nr_of_processed:
+
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(burst_to_ard.burst_to_ard)(*params.split(',')) for params in burst_ard_params)
+
+                nr_of_processed = len(
+                    glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
+
+                i += 1
+
+                # not more than 5 trys
+                if i == 5:
+                    break
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_burst_ard_multiprocess, burst_ard_params)
