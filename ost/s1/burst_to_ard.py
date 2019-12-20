@@ -470,6 +470,8 @@ def _coreg2(master, slave,  outfile, logfile, dem_dict, ncores=os.cpu_count()):
     # get path to graph
     rootpath = importlib.util.find_spec('ost').submodule_search_locations[0]
     graph = opj(rootpath, 'graphs', 'S1_SLC2ARD', 'S1_SLC_Coreg.xml')
+    if not dem_dict['dem file']:
+        dem_dict['dem file'] = " "
 
     print(' INFO: Co-registering {} and {}'.format(master, slave))
     command = ('{} {} -x -q {} '
