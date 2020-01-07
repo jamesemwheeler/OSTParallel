@@ -648,19 +648,20 @@ class Sentinel1_SLCBatch(Sentinel1):
         if timeseries:
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                      overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
-            mt_extent_params = []
-            with open(exec_mt_extent, "r") as fp:
-                mt_extent_params = [line.strip() for line in fp]
-            fp.close()
+            if os.path.isfile(exec_mt_extent):
+                mt_extent_params = []
+                with open(exec_mt_extent, "r") as fp:
+                    mt_extent_params = [line.strip() for line in fp]
+                fp.close()
 
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            #def run_mt_extent_multiprocess(params):
-            #    from ost.multitemporal import common_extent
-            #    common_extent.mt_extent(*params.split(','))
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_extent.mt_extent)(*params.split(';')) for params in mt_extent_params)
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                #def run_mt_extent_multiprocess(params):
+                #    from ost.multitemporal import common_extent
+                #    common_extent.mt_extent(*params.split(','))
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_extent.mt_extent)(*params.split(';')) for params in mt_extent_params)
 
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_mt_extent_multiprocess, mt_extent_params)
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_mt_extent_multiprocess, mt_extent_params)
 
         # test existence of multitemporal layover shadow generation exec files and run them in parallel
         if os.path.isfile(exec_mt_ls):
