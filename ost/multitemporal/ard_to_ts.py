@@ -107,6 +107,8 @@ def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict):
   
 def ard_to_ts(list_of_files, processing_dir, temp_dir, 
               burst, proc_file, product, pol):
+    if type(list_of_files) == str:
+        list_of_files = list_of_files.replace("'", '').strip('][').split(', ')
 
     # get the burst directory
     burst_dir = opj(processing_dir, burst)
