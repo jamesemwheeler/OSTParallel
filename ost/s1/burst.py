@@ -232,6 +232,9 @@ def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
                 if end is True:
                     coherence = False
                     slave_file, slave_burst_nr, slave_id = None, None, None
+                    if ard['product type']=='Coherence_only':
+                        with open(opj(out_dir, '.processed'), 'w') as file:
+                            file.write('No Coherence in this directory \n')
                 else:
                     # read slave burst
                     slave_burst = burst_inventory[
