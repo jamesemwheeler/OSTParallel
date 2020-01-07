@@ -200,6 +200,8 @@ def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
                 end = True
                 print(' INFO: Reached the end of the time-series.'
                       ' Therefore no coherence calculation is done.')
+                if ard['product type'] == 'Coherence_only':
+                    continue
             else:
                 end = False
 
@@ -232,9 +234,7 @@ def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
                 if end is True:
                     coherence = False
                     slave_file, slave_burst_nr, slave_id = None, None, None
-                    if ard['product type']=='Coherence_only':
-                        with open(opj(out_dir, '.processed'), 'w') as file:
-                            file.write('No Coherence in this directory \n')
+
                 else:
                     # read slave burst
                     slave_burst = burst_inventory[
@@ -277,7 +277,7 @@ def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
                     parallel_temp_dir=temp_dir+'/temp_'+burst+'_'+date
                     os.makedirs(parallel_temp_dir, exist_ok=True)
 
-                    args = ('{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}').format(
+                    args = ('{};{};{};{};{};{};{};{};{};{};{};{};{}').format(
                                   master_file, subswath, master_burst_nr, master_id,
                                   proc_file, out_dir, parallel_temp_dir,
                                   slave_file, slave_burst_nr, slave_id,
@@ -337,7 +337,7 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
             parallel_temp_dir = temp_dir + '/temp_' + burst + '_mt_extent'
             os.makedirs(parallel_temp_dir, exist_ok=True)
 
-            args = ('{}, {}, {}, {}').format(
+            args = ('{};{};{};{}').format(
                 list_of_bursts, extent, parallel_temp_dir, -0.0018)
 
             # get path to graph
@@ -375,7 +375,7 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                 parallel_temp_dir = temp_dir + '/temp_' + burst + '_ls_mask'
                 os.makedirs(parallel_temp_dir, exist_ok=True)
 
-                args = ('{}, {}, {}, {}, {}').format(
+                args = ('{};{};{};{};{}').format(
                     list_of_layover, out_ls, parallel_temp_dir,
                     extent, ard_mt['apply ls mask'])
 
@@ -426,7 +426,7 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                 parallel_temp_dir = temp_dir + '/temp_' + burst + '_timeseries'
                 os.makedirs(parallel_temp_dir, exist_ok=True)
 
-                args = ('{}, {}, {}, {}, {}, {}, {}, {}').format(
+                args = ('{};{};{};{};{};{};{};{}').format(
                     list_of_dims, processing_dir, parallel_temp_dir,
                     burst, proc_file, product, pol, ncores)
 
@@ -531,7 +531,7 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
                 #parallel_temp_dir = temp_dir + '/temp_' + burst + '_timescan'
                 #os.makedirs(parallel_temp_dir, exist_ok=True)
 
-                args = ('{}, {}, {}, {}, {}, {}, {}, {}').format(
+                args = ('{};{};{};{};{};{};{};{}').format(
                     timeseries, timescan_prefix, ard_tscan['metrics'],
                     rescale, to_power, ard_tscan['remove outliers'], datelist, ncores)
 
@@ -559,7 +559,7 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
         else:
             exec_tscan_vrt=exec_file+'_tscan_vrt.txt'
             with open(exec_tscan_vrt, 'a') as exe:
-                exe.write('{}, {}\n'.format(timescan_dir, proc_file))
+                exe.write('{};{}\n'.format(timescan_dir, proc_file))
 
 
 def mosaic_timeseries(burst_inventory, processing_dir, temp_dir, 
@@ -637,7 +637,7 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
             if exec_file:
                 parallel_temp_dir = temp_dir + '/temp_' + product + '_'+i+'_mosaic_timeseries'
                 os.makedirs(parallel_temp_dir, exist_ok=True)
-                args = ('{}, {}, {}, {}').format(
+                args = ('{};{};{};{}').format(
                     filelist, outfile, parallel_temp_dir, cut_to_aoi)
 
                 # get path to graph
@@ -662,7 +662,7 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
             # create vrt exec file
             exec_mosaic_ts_vrt = exec_file + '_mosaic_ts_vrt.txt'
             with open(exec_mosaic_ts_vrt, 'a') as exe:
-                exe.write('{}, {}, {}\n'.format(ts_dir, product, outfiles))
+                exe.write('{};{};{}\n'.format(ts_dir, product, outfiles))
 
 
 def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
@@ -717,7 +717,7 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
         if exec_file:
             parallel_temp_dir = temp_dir + '/temp_' + product + '_mosaic_tscan'
             os.makedirs(parallel_temp_dir, exist_ok=True)
-            args = ('{}, {}, {}, {}').format(
+            args = ('{};{};{};{}').format(
                 filelist, outfile, parallel_temp_dir, cut_to_aoi)
 
             # get path to graph
@@ -739,5 +739,5 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
         #create vrt exec file
         exec_mosaic_tscan_vrt = exec_file + '_mosaic_tscan_vrt.txt'
         with open(exec_mosaic_tscan_vrt, 'a') as exe:
-            exe.write('{}, {}\n'.format(tscan_dir, proc_file))
+            exe.write('{};{}\n'.format(tscan_dir, proc_file))
 

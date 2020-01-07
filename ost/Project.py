@@ -630,7 +630,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             i = 0
             while len(self.burst_inventory) > nr_of_processed:
 
-                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(burst_to_ard.burst_to_ard)(*params.split(', ')) for params in burst_ard_params)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(burst_to_ard.burst_to_ard)(*params.split(';')) for params in burst_ard_params)
 
                 nr_of_processed = len(
                     glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
@@ -657,7 +657,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             #def run_mt_extent_multiprocess(params):
             #    from ost.multitemporal import common_extent
             #    common_extent.mt_extent(*params.split(','))
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_extent.mt_extent)(*params.split(', ')) for params in mt_extent_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_extent.mt_extent)(*params.split(';')) for params in mt_extent_params)
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_mt_extent_multiprocess, mt_extent_params)
@@ -675,7 +675,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             #def run_mt_ls_multiprocess(params):
             #    from ost.multitemporal import common_ls_mask
             #    common_ls_mask.mt_layover(*params.split(','))
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_ls_mask.mt_layover)(*params.split(', ')) for params in mt_ls_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_ls_mask.mt_layover)(*params.split(';')) for params in mt_ls_params)
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_mt_ls_multiprocess, mt_ls_params)
@@ -692,7 +692,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             #def run_timeseries_multiprocess(params):
             #   from ost.multitemporal import ard_to_ts
             #   ard_to_ts.ard_to_ts(*params.split(','))
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ard_to_ts.ard_to_ts)(*params.split(', ')) for params in timeseries_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ard_to_ts.ard_to_ts)(*params.split(';')) for params in timeseries_params)
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_timeseries_multiprocess, timeseries_params)
@@ -707,7 +707,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             fp.close()
 
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(timescan.mt_metrics)(*params.split(', ')) for params in tscan_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(timescan.mt_metrics)(*params.split(';')) for params in tscan_params)
 
            # def run_tscan_multiprocess(params):
            #     from ost.multitemporal import timescan
@@ -724,7 +724,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                 tscan_vrt_params = [line.strip() for line in fp]
             fp.close()
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(', ')) for params in tscan_vrt_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(';')) for params in tscan_vrt_params)
             #def run_tscan_vrt_multiprocess(params):
             #    from ost.helpers import raster as ras
             #    ras.create_tscan_vrt(*params.split(','))
@@ -742,7 +742,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             fp.close()
 
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mosaic.mosaic)(*params.split(', ')) for params in mosaic_timeseries_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mosaic.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
             #def run_mosaic_timeseries_multiprocess(params):
             #    from ost.mosaic import mosaic
             #    mosaic.mosaic(*params.split(','))
@@ -760,7 +760,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             fp.close()
             def run_mosaic_ts_vrt_multiprocess(params):
                 vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
-                ts_dir, product, outfiles = params.split(', ')
+                ts_dir, product, outfiles = params.split(';')
                 gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
                               outfiles,
                               options=vrt_options)
@@ -789,7 +789,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             fp.close()
 
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mosaic.mosaic)(*params.split(', ')) for params in mosaic_timescan_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mosaic.mosaic)(*params.split(';')) for params in mosaic_timescan_params)
             #def run_mosaic_timescan_multiprocess(params):
             #    from ost.mosaic import mosaic
             #    mosaic.mosaic(*params.split(','))
@@ -808,7 +808,7 @@ class Sentinel1_SLCBatch(Sentinel1):
             fp.close()
 
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(',')) for params in mosaic_tscan_vrt_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(';')) for params in mosaic_tscan_vrt_params)
             #def run_mosaic_tscan_vrt_multiprocess(params):
             #    from ost.helpers import raster as ras
             #    ras.create_tscan_vrt(*params.split(','))
