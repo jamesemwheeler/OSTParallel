@@ -426,7 +426,7 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                 parallel_temp_dir = temp_dir + '/temp_' + burst + '_timeseries'
                 os.makedirs(parallel_temp_dir, exist_ok=True)
 
-                args = ('{};{};{};{};{};{};{};{}').format(
+                args = ('{};{};{};{};{};{};{}').format(
                     list_of_dims, processing_dir, parallel_temp_dir,
                     burst, proc_file, product, pol)
 

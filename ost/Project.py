@@ -550,8 +550,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                                            self.processing_dir,
                                            self.temp_dir,
                                            self.proc_file,
-                                           exec_file,
-                                           ncores)
+                                           exec_file)
 
             # do we deleete the single ARDs here?
             if timescan:
