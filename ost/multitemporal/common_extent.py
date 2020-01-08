@@ -19,7 +19,6 @@ def mt_extent(list_of_scenes, out_file, temp_dir, buffer=None):
     gdal.BuildVRT(opj(out_dir, 'extent.vrt'),
                   list_of_scenes,
                   options=vrt_options)
-    print('done')
     start = time.time()
 
     outline_file = opj(temp_dir, os.path.basename(out_file))
