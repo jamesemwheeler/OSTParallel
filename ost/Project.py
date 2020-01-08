@@ -550,7 +550,8 @@ class Sentinel1_SLCBatch(Sentinel1):
                                            self.processing_dir,
                                            self.temp_dir,
                                            self.proc_file,
-                                           exec_file)
+                                           exec_file,
+                                           ncores)
 
             # do we deleete the single ARDs here?
             if timescan:
@@ -685,17 +686,18 @@ class Sentinel1_SLCBatch(Sentinel1):
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                      overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
             timeseries_params = []
-            with open(exec_timeseries, "r") as fp:
-                timeseries_params = [line.strip() for line in fp]
-            fp.close()
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            #def run_timeseries_multiprocess(params):
-            #   from ost.multitemporal import ard_to_ts
-            #   ard_to_ts.ard_to_ts(*params.split(','))
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ard_to_ts.ard_to_ts)(*params.split(';')) for params in timeseries_params)
+            if os.path.isfile(exec_timeseries):
+                with open(exec_timeseries, "r") as fp:
+                    timeseries_params = [line.strip() for line in fp]
+                fp.close()
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                #def run_timeseries_multiprocess(params):
+                #   from ost.multitemporal import ard_to_ts
+                #   ard_to_ts.ard_to_ts(*params.split(','))
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ard_to_ts.ard_to_ts)(*params.split(';')) for params in timeseries_params)
 
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_timeseries_multiprocess, timeseries_params)
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_timeseries_multiprocess, timeseries_params)
 
         #test existence of timescan exec files and run them in parallel
         if timeseries and timescan:

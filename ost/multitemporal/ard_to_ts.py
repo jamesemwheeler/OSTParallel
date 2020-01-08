@@ -12,7 +12,7 @@ import gdal
 from ost.helpers import raster as ras, helpers as h
 
 def create_stack(filelist, out_stack, logfile,
-                 polarisation=None, pattern=None):
+                 polarisation=None, pattern=None, ncores=os.cpu_count()):
     '''
 
     :param filelist: list of single Files (space separated)
@@ -29,12 +29,12 @@ def create_stack(filelist, out_stack, logfile,
     if pattern:
         graph = opj(rootpath, 'graphs', 'S1_TS', '1_BS_Stacking_HAalpha.xml')
         command = '{} {} -x -q {} -Pfilelist={} -PbandPattern=\'{}.*\' \
-               -Poutput={}'.format(gpt_file, graph, 2 * os.cpu_count(),
+               -Poutput={}'.format(gpt_file, graph, ncores,
                                    filelist, pattern, out_stack)
     else:
         graph = opj(rootpath, 'graphs', 'S1_TS', '1_BS_Stacking.xml')
         command = '{} {} -x -q {} -Pfilelist={} -Ppol={} \
-               -Poutput={}'.format(gpt_file, graph, 2 * os.cpu_count(),
+               -Poutput={}'.format(gpt_file, graph, ncores,
                                    filelist, polarisation, out_stack)
 
     return_code = h.run_command(command, logfile)
@@ -48,7 +48,7 @@ def create_stack(filelist, out_stack, logfile,
     return return_code
 
 
-def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict):
+def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict,ncores=os.cpu_count()):
     '''
     '''
 
@@ -78,7 +78,7 @@ def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict):
                   ' -PtargetWindowSizeStr={}'
                   ' -PwindowSize={}'
                   '-t \'{}\' \'{}\''.format(
-                      gpt_file, 2 * os.cpu_count(),
+                      gpt_file, ncores,
                       speckle_dict['estimate ENL'],
                       speckle_dict['pan size'],
                       speckle_dict['damping'],
@@ -106,7 +106,7 @@ def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict):
 
   
 def ard_to_ts(list_of_files, processing_dir, temp_dir, 
-              burst, proc_file, product, pol):
+              burst, proc_file, product, pol,ncores=os.cpu_count()):
     if type(list_of_files) == str:
         list_of_files = list_of_files.replace("'", '').strip('][').split(', ')
 

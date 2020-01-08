@@ -310,7 +310,7 @@ def burst_to_ard_batch(burst_inventory, download_dir, processing_dir,
             
             
 def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
-                             proc_file, exec_file=None):
+                             proc_file, exec_file=None, ncores=os.cpu_count()):
 
     # load ard parameters
     with open(proc_file, 'r') as ard_file:
@@ -426,9 +426,9 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                 parallel_temp_dir = temp_dir + '/temp_' + burst + '_timeseries'
                 os.makedirs(parallel_temp_dir, exist_ok=True)
 
-                args = ('{};{};{};{};{};{};{}').format(
+                args = ('{};{};{};{};{};{};{};{}').format(
                     list_of_dims, processing_dir, parallel_temp_dir,
-                    burst, proc_file, product, pol)
+                    burst, proc_file, product, pol, ncores)
 
                 # get path to graph
                 #rootpath = imp.find_module('ost')[1]
@@ -446,7 +446,8 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                             burst, 
                             proc_file, 
                             product=product, 
-                            pol=pol
+                            pol=pol,
+                            ncores=os.cpu_count()
             )
             
 # --------------------
