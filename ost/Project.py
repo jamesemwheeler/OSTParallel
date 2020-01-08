@@ -19,7 +19,7 @@ from ost.helpers import vector as vec, raster as ras
 from ost.s1 import search, refine, download, burst, grd_batch, burst_to_ard
 from ost.helpers import scihub, helpers as h
 from ost.multitemporal import ard_to_ts, timescan, common_extent, common_ls_mask
-from ost.mosaic import mosaic
+from ost.mosaic import mosaic as mos
 
 # set logging
 logging.basicConfig(stream=sys.stdout,
@@ -744,10 +744,10 @@ class Sentinel1_SLCBatch(Sentinel1):
             fp.close()
 
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mosaic.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
             #def run_mosaic_timeseries_multiprocess(params):
             #    from ost.mosaic import mosaic
-            #    mosaic.mosaic(*params.split(','))
+            #    mos.mosaic(*params.split(','))
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_mosaic_timeseries_multiprocess, mosaic_timeseries_params)
@@ -791,10 +791,10 @@ class Sentinel1_SLCBatch(Sentinel1):
             fp.close()
 
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mosaic.mosaic)(*params.split(';')) for params in mosaic_timescan_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timescan_params)
             #def run_mosaic_timescan_multiprocess(params):
             #    from ost.mosaic import mosaic
-            #    mosaic.mosaic(*params.split(','))
+            #    mos.mosaic(*params.split(','))
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_mosaic_timescan_multiprocess, mosaic_timescan_params)
