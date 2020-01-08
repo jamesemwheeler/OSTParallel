@@ -723,10 +723,9 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
             continue
         if exec_file:
             filelist = filelist.split(" ")
-            if cut_to_aoi:
-                cut_to_aoi = 'True'
-            else:
+            if cut_to_aoi==False:
                 cut_to_aoi = 'False'
+
             parallel_temp_dir = temp_dir + '/temp_' + product + '_mosaic_tscan'
             os.makedirs(parallel_temp_dir, exist_ok=True)
             args = ('{};{};{};{}').format(
