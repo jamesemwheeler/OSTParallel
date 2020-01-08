@@ -667,19 +667,21 @@ class Sentinel1_SLCBatch(Sentinel1):
         if os.path.isfile(exec_mt_ls):
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                      overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
-            mt_ls_params = []
-            with open(exec_mt_ls, "r") as fp:
-                mt_ls_params = [line.strip() for line in fp]
-            fp.close()
+            if os.path.isfile(exec_mt_ls):
 
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            #def run_mt_ls_multiprocess(params):
-            #    from ost.multitemporal import common_ls_mask
-            #    common_ls_mask.mt_layover(*params.split(','))
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_ls_mask.mt_layover)(*params.split(';')) for params in mt_ls_params)
+                mt_ls_params = []
+                with open(exec_mt_ls, "r") as fp:
+                    mt_ls_params = [line.strip() for line in fp]
+                fp.close()
 
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_mt_ls_multiprocess, mt_ls_params)
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                #def run_mt_ls_multiprocess(params):
+                #    from ost.multitemporal import common_ls_mask
+                #    common_ls_mask.mt_layover(*params.split(','))
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(common_ls_mask.mt_layover)(*params.split(';')) for params in mt_ls_params)
+
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_mt_ls_multiprocess, mt_ls_params)
 
         #test existence of ard to timeseries exec files and run them in parallel
         if timeseries:
@@ -703,113 +705,122 @@ class Sentinel1_SLCBatch(Sentinel1):
         if timeseries and timescan:
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                      overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
-            tscan_params = []
-            with open(exec_tscan, "r") as fp:
-                tscan_params = [line.strip() for line in fp]
-            fp.close()
+            if os.path.isfile(exec_tscan):
 
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(timescan.mt_metrics)(*params.split(';')) for params in tscan_params)
+                tscan_params = []
+                with open(exec_tscan, "r") as fp:
+                    tscan_params = [line.strip() for line in fp]
+                fp.close()
 
-           # def run_tscan_multiprocess(params):
-           #     from ost.multitemporal import timescan
-           #     timescan.mt_metrics(*params.split(','))
-           # pool = multiprocessing.Pool(processes=multiproc)
-           # pool.map(run_tscan_multiprocess, tscan_params)
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(timescan.mt_metrics)(*params.split(';')) for params in tscan_params)
+
+               # def run_tscan_multiprocess(params):
+               #     from ost.multitemporal import timescan
+               #     timescan.mt_metrics(*params.split(','))
+               # pool = multiprocessing.Pool(processes=multiproc)
+               # pool.map(run_tscan_multiprocess, tscan_params)
 
         #test existence of timescan vrt exec files and run them in parallel
         if timeseries and timescan:
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                      overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
-            tscan_vrt_params = []
-            with open(exec_tscan_vrt, "r") as fp:
-                tscan_vrt_params = [line.strip() for line in fp]
-            fp.close()
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(';')) for params in tscan_vrt_params)
-            #def run_tscan_vrt_multiprocess(params):
-            #    from ost.helpers import raster as ras
-            #    ras.create_tscan_vrt(*params.split(','))
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_tscan_vrt_multiprocess, tscan_vrt_params)
+            if os.path.isfile(exec_tscan_vrt):
+
+                tscan_vrt_params = []
+                with open(exec_tscan_vrt, "r") as fp:
+                    tscan_vrt_params = [line.strip() for line in fp]
+                fp.close()
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(';')) for params in tscan_vrt_params)
+                #def run_tscan_vrt_multiprocess(params):
+                #    from ost.helpers import raster as ras
+                #    ras.create_tscan_vrt(*params.split(','))
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_tscan_vrt_multiprocess, tscan_vrt_params)
 
         # test existence of mosaic timeseries exec files and run them in parallel
         if mosaic and timeseries:
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            if os.path.isfile(exec_mosaic_timeseries):
+                mosaic_timeseries_params = []
+                with open(exec_mosaic_timeseries, "r") as fp:
+                    mosaic_timeseries_params = [line.strip() for line in fp]
+                fp.close()
 
-            mosaic_timeseries_params = []
-            with open(exec_mosaic_timeseries, "r") as fp:
-                mosaic_timeseries_params = [line.strip() for line in fp]
-            fp.close()
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
+                #def run_mosaic_timeseries_multiprocess(params):
+                #    from ost.mosaic import mosaic
+                #    mos.mosaic(*params.split(','))
 
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
-            #def run_mosaic_timeseries_multiprocess(params):
-            #    from ost.mosaic import mosaic
-            #    mos.mosaic(*params.split(','))
-
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_mosaic_timeseries_multiprocess, mosaic_timeseries_params)
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_mosaic_timeseries_multiprocess, mosaic_timeseries_params)
 
         # test existence of mosaic timeseries vrt exec files and run them in parallel
         if mosaic and timeseries:
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
-            mosaic_ts_vrt_params = []
-            with open(exec_mosaic_ts_vrt, "r") as fp:
-                mosaic_ts_vrt_params = [line.strip() for line in fp]
-            fp.close()
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic_to_vrt)(*params.split(';')) for params in mosaic_ts_vrt_params)
+            if os.path.isfile(exec_mosaic_ts_vrt):
 
-            #def run_mosaic_ts_vrt_multiprocess(params):
-            #    vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
-            #    ts_dir, product, outfiles = params.split(',')
-            #    gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
-            #                  outfiles,
-            #                  options=vrt_options)
+                mosaic_ts_vrt_params = []
+                with open(exec_mosaic_ts_vrt, "r") as fp:
+                    mosaic_ts_vrt_params = [line.strip() for line in fp]
+                fp.close()
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic_to_vrt)(*params.split(';')) for params in mosaic_ts_vrt_params)
 
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_mosaic_ts_vrt_multiprocess, mosaic_ts_vrt_params)
+                #def run_mosaic_ts_vrt_multiprocess(params):
+                #    vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
+                #    ts_dir, product, outfiles = params.split(',')
+                #    gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
+                #                  outfiles,
+                #                  options=vrt_options)
+
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_mosaic_ts_vrt_multiprocess, mosaic_ts_vrt_params)
 
         # test existence of mosaic timescan exec files and run them in parallel
         if mosaic and timescan:
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            if os.path.isfile(exec_mosaic_timescan):
 
-            mosaic_timescan_params = []
-            with open(exec_mosaic_timescan, "r") as fp:
-                mosaic_timescan_params = [line.strip() for line in fp]
-            fp.close()
+                mosaic_timescan_params = []
+                with open(exec_mosaic_timescan, "r") as fp:
+                    mosaic_timescan_params = [line.strip() for line in fp]
+                fp.close()
 
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timescan_params)
-            #def run_mosaic_timescan_multiprocess(params):
-            #    from ost.mosaic import mosaic
-            #    mos.mosaic(*params.split(','))
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timescan_params)
+                #def run_mosaic_timescan_multiprocess(params):
+                #    from ost.mosaic import mosaic
+                #    mos.mosaic(*params.split(','))
 
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_mosaic_timescan_multiprocess, mosaic_timescan_params)
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_mosaic_timescan_multiprocess, mosaic_timescan_params)
 
         # test existence of mosaic timescan vrt exec files and run them in parallel
         if mosaic and timescan:
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            if os.path.isfile(exec_mosaic_tscan_vrt):
 
-            mosaic_tscan_vrt_params = []
-            with open(exec_mosaic_tscan_vrt, "r") as fp:
-                mosaic_tscan_vrt_params = [line.strip() for line in fp]
-            fp.close()
+                mosaic_tscan_vrt_params = []
+                with open(exec_mosaic_tscan_vrt, "r") as fp:
+                    mosaic_tscan_vrt_params = [line.strip() for line in fp]
+                fp.close()
 
-            ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(';')) for params in mosaic_tscan_vrt_params)
-            #def run_mosaic_tscan_vrt_multiprocess(params):
-            #    from ost.helpers import raster as ras
-            #    ras.create_tscan_vrt(*params.split(','))
+                ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(ras.create_tscan_vrt)(*params.split(';')) for params in mosaic_tscan_vrt_params)
+                #def run_mosaic_tscan_vrt_multiprocess(params):
+                #    from ost.helpers import raster as ras
+                #    ras.create_tscan_vrt(*params.split(','))
 
-            #pool = multiprocessing.Pool(processes=multiproc)
-            #pool.map(run_mosaic_tscan_vrt_multiprocess, mosaic_tscan_vrt_params)
+                #pool = multiprocessing.Pool(processes=multiproc)
+                #pool.map(run_mosaic_tscan_vrt_multiprocess, mosaic_tscan_vrt_params)
 
 
 
