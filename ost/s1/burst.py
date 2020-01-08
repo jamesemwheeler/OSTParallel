@@ -666,6 +666,7 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
                           options=vrt_options)
         else:
             # create vrt exec file
+
             exec_mosaic_ts_vrt = exec_file + '_mosaic_ts_vrt.txt'
             with open(exec_mosaic_ts_vrt, 'a') as exe:
                 exe.write('{};{};{}\n'.format(ts_dir, product, outfiles))
@@ -721,6 +722,11 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
                   ' processed.'.format(os.path.basename(outfile)))
             continue
         if exec_file:
+            filelist = filelist.split(" ")
+            if cut_to_aoi:
+                cut_to_aoi = 'True'
+            else:
+                cut_to_aoi = 'False'
             parallel_temp_dir = temp_dir + '/temp_' + product + '_mosaic_tscan'
             os.makedirs(parallel_temp_dir, exist_ok=True)
             args = ('{};{};{};{}').format(
