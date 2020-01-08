@@ -8,6 +8,11 @@ from ost.helpers import helpers as h
 
 
 def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
+    if type(cut_to_aoi)==str:
+        if cut_to_aoi == 'True':
+            cut_to_aoi=True
+        else:
+            cut_to_aoi=False
     if type(filelist) == list:
         filelist=' '.join([str(elem) for elem in filelist])
     check_file = opj(
