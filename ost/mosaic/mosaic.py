@@ -18,7 +18,7 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
         os.path.dirname(outfile), '{}.errLog'.format(os.path.basename(outfile)[:-4])
     )
         
-    with rasterio.open(filelist.replace("'", '').split(' ')[0]) as src:
+    with rasterio.open(filelist.replace("'", '').replace(",", '').strip('][').split(' ')[0]) as src:
         dtype = src.meta['dtype']
         dtype = 'float' if dtype == 'float32' else dtype
         
@@ -34,7 +34,7 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
                         ' -harmo.cost rmse'
                         ' -temp_dir {}'
                         ' -il {}'
-                        ' -out {} {}'.format(temp_dir, filelist.replace("'", ''),
+                        ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
                                              tempfile, dtype)
     )
 
