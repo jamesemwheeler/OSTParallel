@@ -636,6 +636,7 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
                        ' processed.'.format(outfile))
                 continue
             if exec_file:
+                filelist=filelist.split(" ")
                 parallel_temp_dir = temp_dir + '/temp_' + product + '_' + str(i) + '_mosaic_timeseries'
                 os.makedirs(parallel_temp_dir, exist_ok=True)
                 args = ('{};{};{};{}').format(

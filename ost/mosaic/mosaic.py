@@ -8,7 +8,8 @@ from ost.helpers import helpers as h
 
 
 def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
-
+    if type(filelist)==list:
+        filelist=' '.join([str(elem) for elem in filelist])
     check_file = opj(
         os.path.dirname(outfile), '.{}.processed'.format(os.path.basename(outfile)[:-4])
     )
