@@ -339,7 +339,7 @@ def get_max(file):
             return items
 
 
-def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, plot=False,
+def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5, plot=False,
                    minimum_list=None, maximum_list=None, date=None):
 
     import matplotlib.pyplot as plt
@@ -360,7 +360,7 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, plot=False,
         
         layer1 = src.read(
                 out_shape=(src.count, new_height, new_width),
-                resampling=5    # 5 = average
+                resampling=resampling_factor    # 5 = average
                 )[0]
         minimum_list.append(get_min(filelist[0]))
         maximum_list.append(get_max(filelist[0]))
@@ -370,7 +370,7 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, plot=False,
         with rasterio.open(filelist[1]) as src:
             layer2 = src.read(
                     out_shape=(src.count, new_height, new_width),
-                    resampling=5    # 5 = average
+                    resampling=resampling_factor    # 5 = average
                     )[0]
             minimum_list.append(get_min(filelist[1]))
             maximum_list.append(get_max(filelist[1]))
@@ -387,7 +387,7 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, plot=False,
         with rasterio.open(filelist[2]) as src:
             layer3 = src.read(
                     out_shape=(src.count, new_height, new_width),
-                    resampling=5    # 5 = average
+                    resampling=resampling_factor    # 5 = average
                     )[0]
         minimum_list.append(get_min(filelist[2]))
         maximum_list.append(get_max(filelist[2]))
@@ -431,7 +431,7 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, plot=False,
 
     
 def create_timeseries_animation(timeseries_folder, product_list, out_folder,
-                                shrink_factor=1, duration=1, add_dates=False):
+                                shrink_factor=1, resampling_factor=5, duration=1, add_dates=False):
 
     
     nr_of_products = len(glob.glob(
@@ -453,7 +453,8 @@ def create_timeseries_animation(timeseries_folder, product_list, out_folder,
         
         create_rgb_jpeg(filelist, 
                         opj(out_folder, '{}.{}.jpeg'.format(i+1, dates)),
-                        shrink_factor, 
+                        shrink_factor,
+                        resampling_factor,
                         date=date)
 
         outfiles.append(opj(out_folder, '{}.{}.jpeg'.format(i+1, dates)))
