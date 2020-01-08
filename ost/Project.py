@@ -760,18 +760,8 @@ class Sentinel1_SLCBatch(Sentinel1):
             with open(exec_mosaic_ts_vrt, "r") as fp:
                 mosaic_ts_vrt_params = [line.strip() for line in fp]
             fp.close()
-            def run_mosaic_ts_vrt_multiprocess(params):
-                vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
-                ts_dir, product, outfiles = params.split(';')
-                if type(outfiles) == str:
-                    outfiles = outfiles.replace("'", '').strip('][').split(', ')
-                gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
-                              outfiles,
-                              options=vrt_options)
-            for params in mosaic_ts_vrt_params:
-                run_mosaic_ts_vrt_multiprocess(params)
             ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-            #Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(run_mosaic_ts_vrt_multiprocess)(params) for params in mosaic_ts_vrt_params)
+            Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic_to_vrt)(*params.split(';')) for params in mosaic_ts_vrt_params)
 
             #def run_mosaic_ts_vrt_multiprocess(params):
             #    vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)

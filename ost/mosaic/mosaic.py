@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
 import os
 from os.path import join as opj
+import gdal
 import numpy as np
 import rasterio
 from ost.helpers import vector as vec
 from ost.helpers import helpers as h
+
+
+def mosaic_to_vrt(ts_dir, product, outfiles):
+    vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
+    if type(outfiles) == str:
+        outfiles = outfiles.replace("'", '').strip('][').split(', ')
+
+    gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
+                  outfiles,
+                  options=vrt_options)
 
 
 def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
@@ -36,7 +47,7 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
                         ' -comp.feather large'
                         ' -harmo.method band'
                         ' -harmo.cost rmse'
-                        ' -temp_dir {}'
+                        ' -tmpdir {}'
                         ' -il {}'
                         ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
                                              tempfile, dtype)
