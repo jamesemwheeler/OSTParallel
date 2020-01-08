@@ -763,6 +763,8 @@ class Sentinel1_SLCBatch(Sentinel1):
             def run_mosaic_ts_vrt_multiprocess(params):
                 vrt_options = gdal.BuildVRTOptions(srcNodata=0, separate=True)
                 ts_dir, product, outfiles = params.split(';')
+                if type(outfiles) == str:
+                    outfiles = outfiles.replace("'", '').strip('][').split(', ')
                 gdal.BuildVRT(opj(ts_dir, '{}.Timeseries.vrt'.format(product)),
                               outfiles,
                               options=vrt_options)
