@@ -582,7 +582,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                                   exec_file
             )
 
-    def create_timeseries_animation(timeseries_dir, product_list, outfile, 
+    def create_timeseries_animation(self, timeseries_dir, product_list, outfile,
                                     shrink_factor=1, duration=1, 
                                     add_dates=False):
         
