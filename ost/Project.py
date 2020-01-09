@@ -18,7 +18,7 @@ from joblib import Parallel, delayed
 from ost.helpers import vector as vec, raster as ras
 from ost.s1 import search, refine, download, burst, grd_batch, burst_to_ard
 from ost.helpers import scihub, helpers as h
-from ost.multitemporal import ard_to_ts, timescan, common_extent, common_ls_mask
+from ost.multitemporal import ard_to_ts, common_extent, common_ls_mask, timescan as tscan
 from ost.mosaic import mosaic as mos
 
 # set logging
@@ -713,7 +713,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                 fp.close()
 
                 ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(timescan.mt_metrics)(*params.split(';')) for params in tscan_params)
+                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(tscan.mt_metrics)(*params.split(';')) for params in tscan_params)
 
                # def run_tscan_multiprocess(params):
                #     from ost.multitemporal import timescan
