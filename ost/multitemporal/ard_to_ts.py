@@ -125,7 +125,8 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
         ard_params = json.load(ard_file)['processing parameters']
         ard = ard_params['single ARD']
         ard_mt = ard_params['time-series ARD']
-
+        if ard_mt['remove mt speckle'] is True:
+            ard_mt_speck = ard_params['time-series ARD']['mt speckle filter']
     # get the db scaling right
     to_db = ard['to db']
     if to_db or product is not 'bs':
@@ -175,10 +176,10 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
     if ard_mt['remove mt speckle'] is True:
         speckle_log = opj(out_dir, '{}_{}_{}_mt_speckle.err_log'.format(
             burst, product, pol))
-        speckle_dic=ard_mt['mt speckle filter']
+
         print(' INFO: Applying multi-temporal speckle filter')
         mt_speckle_filter('{}.dim'.format(temp_stack), 
-                             out_stack, speckle_log,speckle_dic, ncores)
+                             out_stack, speckle_log,ard_mt_speck, ncores)
         # remove tmp files
         h.delete_dimap(temp_stack)
     else:
