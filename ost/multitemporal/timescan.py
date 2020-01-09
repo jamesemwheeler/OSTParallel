@@ -147,6 +147,10 @@ def mt_metrics(stack, out_prefix, metrics, rescale_to_datatype=False,
             outlier_removal = True
         elif outlier_removal == 'False':
             outlier_removal = False
+    if type(metrics) == str:
+        metrics = metrics.replace("'", '').strip('][').split(', ')
+    if type(datelist) == str:
+        datelist = datelist.replace("'", '').strip('][').split(', ')
 
     # from datetime import datetime
     with rasterio.open(stack) as src:
