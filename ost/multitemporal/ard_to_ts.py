@@ -70,14 +70,14 @@ def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict,ncores=os.cpu_c
                   ' -PanSize={}'
                   ' -PdampingFactor={}'
                   ' -Penl={}'
-                  ' -Pfilter={}'
+                  ' -Pfilter=\'{}\''
                   ' -PfilterSizeX={}'
                   ' -PfilterSizeY={}'
                   ' -PnumLooksStr={}'
                   ' -PsigmaStr={}'
                   ' -PtargetWindowSizeStr={}'
                   ' -PwindowSize={}'
-                  '-t \'{}\' \'{}\''.format(
+                  ' -t \'{}\' \'{}\''.format(
                       gpt_file, ncores,
                       speckle_dict['estimate ENL'],
                       speckle_dict['pan size'],
