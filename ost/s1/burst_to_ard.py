@@ -864,7 +864,9 @@ def burst_to_ard(master_file,
     # remove calibrated files
     if ard['product type'] != "Coherence_only":
         h.delete_dimap(out_cal)
-
+    if type(coherence) == str:
+        if coherence == 'False':
+            coherence=False
     if coherence:
 
         # import slave
