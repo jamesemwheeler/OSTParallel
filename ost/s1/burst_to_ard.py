@@ -677,7 +677,16 @@ def burst_to_ard(master_file,
         remove_slave_import (bool):
         ncores (int): number of cpus used - useful for parallel processing
     '''
-
+    if type(remove_slave_import) == str:
+        if remove_slave_import == 'True':
+            remove_slave_import=True
+        elif remove_slave_import == 'False':
+            remove_slave_import=False
+    if type(coherence) == str:
+        if coherence == 'True':
+            coherence=True
+        elif coherence == 'False':
+            coherence=False
     # load ards
     with open(proc_file, 'r') as ard_file:
         ard_params = json.load(ard_file)['processing parameters']
@@ -864,9 +873,7 @@ def burst_to_ard(master_file,
     # remove calibrated files
     if ard['product type'] != "Coherence_only":
         h.delete_dimap(out_cal)
-    if type(coherence) == str:
-        if coherence == 'False':
-            coherence=False
+
     if coherence:
 
         # import slave
