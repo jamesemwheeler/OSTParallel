@@ -22,7 +22,9 @@ def mt_layover(filelist, outfile, temp_dir, extent, update_extent=False):
     '''
     if type(filelist) == str:
         filelist = filelist.replace("'", '').strip('][').split(', ')
-
+    if type(update_extent) == str:
+        if update_extent == 'False':
+            update_extent = False
     # get some info
     burst_dir = os.path.dirname(outfile)
     burst = os.path.basename(burst_dir)
