@@ -454,7 +454,7 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
 # timescan part
 # --------------------
 def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir, 
-                           proc_file, exec_file=None, ncores=os.cpu_count()):
+                           proc_file, exec_file=None):
     '''Function to create a timescan out of a OST timeseries.
 
     '''
@@ -534,7 +534,7 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
 
                 args = ('{};{};{};{};{};{};{};{}').format(
                     timeseries, timescan_prefix, ard_tscan['metrics'],
-                    rescale, to_power, ard_tscan['remove outliers'], datelist, ncores)
+                    rescale, to_power, ard_tscan['remove outliers'], datelist)
 
                 # get path to graph
                 # rootpath = imp.find_module('ost')[1]
