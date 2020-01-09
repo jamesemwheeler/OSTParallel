@@ -179,7 +179,7 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
 
         print(' INFO: Applying multi-temporal speckle filter')
         mt_speckle_filter('{}.dim'.format(temp_stack), 
-                             out_stack, speckle_log,ard_mt_speck, ncores)
+                             out_stack, speckle_log, speckle_dict=ard_mt_speck, ncores)
         # remove tmp files
         h.delete_dimap(temp_stack)
     else:
