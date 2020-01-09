@@ -532,7 +532,7 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
                 #parallel_temp_dir = temp_dir + '/temp_' + burst + '_timescan'
                 #os.makedirs(parallel_temp_dir, exist_ok=True)
 
-                args = ('{};{};{};{};{};{};{};{}').format(
+                args = ('{};{};{};{};{};{};{}').format(
                     timeseries, timescan_prefix, ard_tscan['metrics'],
                     rescale, to_power, ard_tscan['remove outliers'], datelist)
 
