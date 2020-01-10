@@ -20,11 +20,15 @@ from ost.s1 import search, refine, download, burst, grd_batch, burst_to_ard
 from ost.helpers import scihub, helpers as h
 from ost.multitemporal import ard_to_ts, common_extent, common_ls_mask, timescan as tscan
 from ost.mosaic import mosaic as mos
+import sys
 
 # set logging
 logging.basicConfig(stream=sys.stdout,
                     format='%(levelname)s:%(message)s',
                     level=logging.INFO)
+class DevNull(object):
+    def write(self, arg):
+        pass
 
 
 class Generic():
@@ -614,6 +618,7 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         #test existence of burst to ard exec files and run them in parallel
         if os.path.isfile(exec_burst_to_ard):
+            print("Running Burst to ARD in parallel mode")
             from ost.s1 import burst_to_ard
             burst_ard_params = []
             with open(exec_burst_to_ard, "r") as fp:
@@ -646,8 +651,14 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         # test existence of multitemporal extent exec files and run them in parallel
         if timeseries:
+            print("Rerunning exec file generation and Calculating ARD extents in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                      overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
             if os.path.isfile(exec_mt_extent):
                 mt_extent_params = []
                 with open(exec_mt_extent, "r") as fp:
@@ -665,8 +676,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         # test existence of multitemporal layover shadow generation exec files and run them in parallel
         if os.path.isfile(exec_mt_ls):
+            print("Rerunning exec file generation and Calculating ARD layover in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
-                     overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+                               overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             if os.path.isfile(exec_mt_ls):
 
                 mt_ls_params = []
@@ -685,8 +703,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         #test existence of ard to timeseries exec files and run them in parallel
         if timeseries:
+            print("Rerunning exec file generation and processing ARD to timeseries in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
-                     overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+                               overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             timeseries_params = []
             if os.path.isfile(exec_timeseries):
                 with open(exec_timeseries, "r") as fp:
@@ -703,8 +728,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         #test existence of timescan exec files and run them in parallel
         if timeseries and timescan:
+            print("Rerunning exec file generation and processing timeseries to timescan in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
-                     overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+                               overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             if os.path.isfile(exec_tscan):
 
                 tscan_params = []
@@ -723,8 +755,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         #test existence of timescan vrt exec files and run them in parallel
         if timeseries and timescan:
+            print("Rerunning exec file generation and generating timescan vrt files in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
-                     overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+                               overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             if os.path.isfile(exec_tscan_vrt):
 
                 tscan_vrt_params = []
@@ -741,8 +780,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         # test existence of mosaic timeseries exec files and run them in parallel
         if mosaic and timeseries:
+            print("Rerunning exec file generation and generating timeseries mosaics in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             if os.path.isfile(exec_mosaic_timeseries):
                 mosaic_timeseries_params = []
                 with open(exec_mosaic_timeseries, "r") as fp:
@@ -760,9 +806,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         # test existence of mosaic timeseries vrt exec files and run them in parallel
         if mosaic and timeseries:
+            print("Rerunning exec file generation and generating timeseries mosaic vrt files in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
 
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             if os.path.isfile(exec_mosaic_ts_vrt):
 
                 mosaic_ts_vrt_params = []
@@ -784,8 +836,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         # test existence of mosaic timescan exec files and run them in parallel
         if mosaic and timescan:
+            print("Rerunning exec file generation and generating timescan mosaics in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             if os.path.isfile(exec_mosaic_timescan):
 
                 mosaic_timescan_params = []
@@ -804,8 +863,15 @@ class Sentinel1_SLCBatch(Sentinel1):
 
         # test existence of mosaic timescan vrt exec files and run them in parallel
         if mosaic and timescan:
+            print("Rerunning exec file generation and generating timeseries mosaic vrt files in parallel mode")
+
+            _stdout = sys.stdout
+            sys.stdout = DevNull()
+
             self.bursts_to_ard(timeseries=timeseries, timescan=timescan, mosaic=mosaic,
                                overwrite=overwrite, exec_file=exec_file, cut_to_aoi=cut_to_aoi, ncores=ncores)
+            sys.stdout = _stdout
+
             if os.path.isfile(exec_mosaic_tscan_vrt):
 
                 mosaic_tscan_vrt_params = []
