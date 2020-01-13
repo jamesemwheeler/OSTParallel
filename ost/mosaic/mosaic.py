@@ -41,7 +41,7 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count())
         tempfile = opj(temp_dir, os.path.basename(outfile))
     else: 
         tempfile = outfile
-    if ncores != os.cpu_count():
+    if int(ncores) != os.cpu_count():
         cpushare = (1024 / int(os.cpu_count())) * int(ncores)
         cmd1 = 'cgcreate -g cpu:/cpulimited'
         return_code1 = h.run_command(cmd1, logfile)
@@ -60,11 +60,9 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count())
 
         return_code = h.run_command(cmd, logfile)
         if return_code != 0:
-            if
-        os.path.isfile(tempfile): \
-            os.remove(tempfile)
-
-        return
+            if os.path.isfile(tempfile):
+                os.remove(tempfile)
+            return
 
     else:
         cmd = ('otbcli_Mosaic -ram 4096'
