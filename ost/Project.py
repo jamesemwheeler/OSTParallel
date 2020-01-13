@@ -796,11 +796,14 @@ class Sentinel1_SLCBatch(Sentinel1):
                 with open(exec_mosaic_timeseries, "r") as fp:
                     mosaic_timeseries_params = [line.strip() for line in fp]
                 fp.close()
+                logfile1 = exec_file + '_mosaic_ts_cgroup1.errLog'
+                logfile2 = exec_file + '_mosaic_ts_cgroup2.errLog'
+
                 cpushare = (1024 / int(os.cpu_count())) * int(ncores)
                 cmd1 = 'cgcreate -g cpu:/cpulimited'
-                return_code1 = h.run_command(cmd1, logfile)
+                return_code1 = h.run_command(cmd1, logfile1)
                 cmd2 = 'cgset -r cpu.shares={} cpulimited'.format(cpushare)
-                return_code2 = h.run_command(cmd2, logfile)
+                return_code2 = h.run_command(cmd2, logfile2)
                 ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
                 Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
                 #def run_mosaic_timeseries_multiprocess(params):
