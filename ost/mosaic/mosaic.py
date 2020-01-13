@@ -18,7 +18,7 @@ def mosaic_to_vrt(ts_dir, product, outfiles):
                   options=vrt_options)
 
 
-def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
+def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count()):
     if type(cut_to_aoi)==str:
         if cut_to_aoi == 'False':
             cut_to_aoi=False
@@ -41,15 +41,15 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False):
         tempfile = opj(temp_dir, os.path.basename(outfile))
     else: 
         tempfile = outfile
-        
-    cmd = ('otbcli_Mosaic -ram 4096'
+    cpushare = (1024 / int(os.cpu_count()))*int(ncores)
+    cmd = ('cgcreate -g cpu:/cpulimited;cgset -r cpu.shares={} cpulimited;cgexec -g cpu:cpulimited otbcli_Mosaic -ram 4096'
                         ' -progress 1'
                         ' -comp.feather large'
                         ' -harmo.method band'
                         ' -harmo.cost rmse'
                         ' -tmpdir {}'
                         ' -il {}'
-                        ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
+                        ' -out {} {}'.format(cpushare, temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
                                              tempfile, dtype)
     )
 

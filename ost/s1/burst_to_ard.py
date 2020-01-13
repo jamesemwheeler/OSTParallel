@@ -679,14 +679,14 @@ def burst_to_ard(master_file,
     '''
     if type(remove_slave_import) == str:
         if remove_slave_import == 'True':
-            remove_slave_import=True
+            remove_slave_import = True
         elif remove_slave_import == 'False':
-            remove_slave_import=False
+            remove_slave_import = False
     if type(coherence) == str:
         if coherence == 'True':
-            coherence=True
+            coherence = True
         elif coherence == 'False':
-            coherence=False
+            coherence = False
     # load ards
     with open(proc_file, 'r') as ard_file:
         ard_params = json.load(ard_file)['processing parameters']
