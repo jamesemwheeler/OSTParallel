@@ -43,14 +43,14 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count())
         tempfile = outfile
     if int(ncores) != os.cpu_count():
 
-        cmd = ('cgexec -g cpu:cpulimited otbcli_Mosaic -ram 4096'
+        cmd = ('cpulimit -l {} otbcli_Mosaic -ram 4096'
                ' -progress 1'
                ' -comp.feather large'
                ' -harmo.method band'
                ' -harmo.cost rmse'
                ' -tmpdir {}'
                ' -il {}'
-               ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
+               ' -out {} {}'.format(int(ncores)*100, temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
                                     tempfile, dtype)
                )
 
