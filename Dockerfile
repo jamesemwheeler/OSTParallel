@@ -36,7 +36,7 @@ RUN groupadd -r ost && \
         unzip \
         imagemagick \
         npm \
-        cgroup-bin && \
+        cpulimit && \
     rm -rf /var/lib/apt/lists/*  && \
     python3 -m pip install jupyterlab && \
     mkdir /home/ost/programs && \
