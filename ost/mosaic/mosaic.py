@@ -42,11 +42,7 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count())
     else: 
         tempfile = outfile
     if int(ncores) != os.cpu_count():
-        cpushare = (1024 / int(os.cpu_count())) * int(ncores)
-        cmd1 = 'cgcreate -g cpu:/cpulimited'
-        return_code1 = h.run_command(cmd1, logfile)
-        cmd2 = 'cgset -r cpu.shares={} cpulimited'.format(cpushare)
-        return_code2 = h.run_command(cmd2, logfile)
+
         cmd = ('cgexec -g cpu:cpulimited otbcli_Mosaic -ram 4096'
                ' -progress 1'
                ' -comp.feather large'
