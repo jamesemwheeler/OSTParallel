@@ -41,25 +41,50 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count())
         tempfile = opj(temp_dir, os.path.basename(outfile))
     else: 
         tempfile = outfile
-    cpushare = (1024 / int(os.cpu_count()))*int(ncores)
-    cmd = ('cgcreate -g cpu:/cpulimited;cgset -r cpu.shares={} cpulimited;cgexec -g cpu:cpulimited otbcli_Mosaic -ram 4096'
+    if ncores != os.cpu_count():
+        cpushare = (1024 / int(os.cpu_count())) * int(ncores)
+        cmd1 = 'cgcreate -g cpu:/cpulimited'
+        return_code1 = h.run_command(cmd1, logfile)
+        cmd2 = 'cgset -r cpu.shares={} cpulimited'.format(cpushare)
+        return_code2 = h.run_command(cmd2, logfile)
+        cmd = ('cgexec -g cpu:cpulimited otbcli_Mosaic -ram 4096'
+               ' -progress 1'
+               ' -comp.feather large'
+               ' -harmo.method band'
+               ' -harmo.cost rmse'
+               ' -tmpdir {}'
+               ' -il {}'
+               ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
+                                    tempfile, dtype)
+               )
+
+        return_code = h.run_command(cmd, logfile)
+        if return_code != 0:
+            if
+        os.path.isfile(tempfile): \
+            os.remove(tempfile)
+
+        return
+
+    else:
+        cmd = ('otbcli_Mosaic -ram 4096'
                         ' -progress 1'
                         ' -comp.feather large'
                         ' -harmo.method band'
                         ' -harmo.cost rmse'
                         ' -tmpdir {}'
                         ' -il {}'
-                        ' -out {} {}'.format(cpushare, temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
+                        ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
                                              tempfile, dtype)
-    )
+        )
 
-    return_code = h.run_command(cmd, logfile)
-    if return_code != 0:
-        if os.path.isfile(tempfile):
-            os.remove(tempfile)
-                
-        return
-    
+        return_code = h.run_command(cmd, logfile)
+        if return_code != 0:
+            if os.path.isfile(tempfile):
+                os.remove(tempfile)
+
+            return
+
     if cut_to_aoi:
         
         # get aoi ina way rasterio wants it
