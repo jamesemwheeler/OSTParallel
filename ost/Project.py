@@ -574,7 +574,8 @@ class Sentinel1_SLCBatch(Sentinel1):
                                     self.processing_dir,
                                     self.temp_dir,
                                     cut_to_aoi,
-                                    exec_file
+                                    exec_file,
+                                    ncores
             )
 
         if mosaic and timescan:
@@ -583,7 +584,8 @@ class Sentinel1_SLCBatch(Sentinel1):
                                   self.temp_dir,
                                   self.proc_file,
                                   cut_to_aoi,
-                                  exec_file
+                                  exec_file,
+                                  ncores
             )
 
     def create_timeseries_animation(self, timeseries_dir, product_list, outfile,
