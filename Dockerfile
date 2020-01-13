@@ -34,8 +34,9 @@ RUN groupadd -r ost && \
         wget \
         nodejs \
         unzip \
-        imagemagick \        
-        npm && \
+        imagemagick \
+        npm \
+        cgroup && \
     rm -rf /var/lib/apt/lists/*  && \
     python3 -m pip install jupyterlab && \
     mkdir /home/ost/programs && \
