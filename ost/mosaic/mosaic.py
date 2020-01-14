@@ -43,7 +43,7 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count())
         tempfile = outfile
     if int(ncores) != os.cpu_count():
 
-        cmd = ('cpulimit -l {} --include-children -- otbcli_Mosaic -ram 4096'
+        cmd = ('cpulimit -l {} --monitor-forks -- otbcli_Mosaic -ram 4096'
                ' -progress 1'
                ' -comp.feather large'
                ' -harmo.method band'
