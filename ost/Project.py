@@ -329,12 +329,12 @@ class Sentinel1(Generic):
                                         uname=uname,
                                         pword=pword)
 
-    def plot_inventory(self, inventory_df=None, transparency=0.05):
+    def plot_inventory(self, inventory_df=None, transparency=0.05, annotate=False):
 
         if inventory_df is None:
-            vec.plot_inventory(self.aoi, self.inventory, transparency)
+            vec.plot_inventory(self.aoi, self.inventory, transparency, annotate)
         else:
-            vec.plot_inventory(self.aoi, inventory_df, transparency)
+            vec.plot_inventory(self.aoi, inventory_df, transparency, annotate)
 
 
 class Sentinel1_SLCBatch(Sentinel1):
