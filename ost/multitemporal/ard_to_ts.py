@@ -131,10 +131,10 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
     to_db = ard['to db']
     if to_db or product is not 'bs':
         to_db = False
-        print('Not converting to dB')
+        print('Not converting to dB for {}'.format(product))
     else:
         to_db = ard_mt['to db']
-        print('Converting to dB')
+        print('Converting to dB for {}'.format(product))
 
     
     if ard['apply ls mask']:
