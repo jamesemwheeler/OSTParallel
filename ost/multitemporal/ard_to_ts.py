@@ -129,7 +129,7 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
             ard_mt_speck = ard_params['time-series ARD']['mt speckle filter']
     # get the db scaling right
     to_db = ard['to db']
-    if to_db or product is not 'bs':
+    if to_db or product != 'bs':
         to_db = False
         print('Not converting to dB for {}'.format(product))
     else:
