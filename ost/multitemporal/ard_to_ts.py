@@ -106,7 +106,7 @@ def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict,ncores=os.cpu_c
 
   
 def ard_to_ts(list_of_files, processing_dir, temp_dir, 
-              burst, proc_file, product, pol,ncores=os.cpu_count()):
+              burst, proc_file, product, pol, ncores=os.cpu_count()):
     if type(list_of_files) == str:
         list_of_files = list_of_files.replace("'", '').strip('][').split(', ')
 
@@ -129,7 +129,8 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
             ard_mt_speck = ard_params['time-series ARD']['mt speckle filter']
     # get the db scaling right
     to_db = ard['to db']
-    if to_db or product != 'bs':
+    print(to_db + ' ' + product)
+    if to_db or product is not 'bs':
         to_db = False
         print('Not converting to dB for {}'.format(product))
     else:
