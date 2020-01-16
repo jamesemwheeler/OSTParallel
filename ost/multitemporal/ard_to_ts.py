@@ -40,7 +40,7 @@ def create_stack(filelist, out_stack, logfile,
     return_code = h.run_command(command, logfile)
 
     if return_code == 0:
-        print(' INFO: Succesfully created multi-temporal stack')
+        print(' INFO: Successfully created multi-temporal stack')
     else:
         print(' ERROR: Stack creation exited with an error.'
               ' See {} for Snap Error output'.format(logfile))
@@ -97,7 +97,7 @@ def mt_speckle_filter(in_stack, out_stack, logfile, speckle_dict,ncores=os.cpu_c
     return_code = h.run_command(command, logfile)
 
     if return_code == 0:
-        print(' INFO: Succesfully applied multi-temporal speckle filtering')
+        print(' INFO: Successfully applied multi-temporal speckle filtering')
     else:
         print(' ERROR: Multi-temporal speckle filtering exited with an error. \
                 See {} for Snap Error output'.format(logfile))
@@ -131,8 +131,11 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
     to_db = ard['to db']
     if to_db or product is not 'bs':
         to_db = False
+        print('Not converting to dB')
     else:
         to_db = ard_mt['to db']
+        print('Converting to dB')
+
     
     if ard['apply ls mask']:
         extent = opj(burst_dir, '{}.extent.masked.shp'.format(burst))
