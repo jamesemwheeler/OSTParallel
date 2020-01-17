@@ -590,11 +590,11 @@ class Sentinel1_SLCBatch(Sentinel1):
 
     def create_timeseries_animation(self, timeseries_dir, product_list, outfile,
                                     shrink_factor=1, resampling_factor=5, duration=1,
-                                    add_dates=False):
+                                    add_dates=False, prefix=False):
         
         ras.create_timeseries_animation(timeseries_dir, product_list, outfile, 
                                     shrink_factor=shrink_factor, duration=duration, resampling_factor=resampling_factor,
-                                    add_dates=add_dates)
+                                    add_dates=add_dates,prefix=prefix)
     def multiprocess(self, timeseries=False, timescan=False, mosaic=False,
                      overwrite=False, exec_file=None, cut_to_aoi=False, ncores=os.cpu_count(), multiproc=os.cpu_count()):
         '''
