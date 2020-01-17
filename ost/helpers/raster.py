@@ -431,7 +431,7 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
 
     
 def create_timeseries_animation(timeseries_folder, product_list, out_folder,
-                                shrink_factor=1, resampling_factor=5, duration=1, add_dates=False):
+                                shrink_factor=1, resampling_factor=5, duration=1, add_dates=False, prefix=False):
 
     
     nr_of_products = len(glob.glob(
@@ -460,7 +460,11 @@ def create_timeseries_animation(timeseries_folder, product_list, out_folder,
         outfiles.append(opj(out_folder, '{}.{}.jpeg'.format(i+1, dates)))
 
     # create gif
-    with imageio.get_writer(opj(out_folder, 'ts_animation.gif'), mode='I',
+    if prefix:
+        gif_name = '{}_{}_ts_animation.gif'.format(prefix,product_list[0])
+    else:
+        gif_name = '{}_ts_animation.gif'.format(product_list[0])
+    with imageio.get_writer(opj(out_folder, gif_name), mode='I',
         duration=duration) as writer:
 
         for file in outfiles:
