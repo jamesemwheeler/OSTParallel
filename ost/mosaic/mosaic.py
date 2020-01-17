@@ -41,43 +41,23 @@ def mosaic(filelist, outfile, temp_dir, cut_to_aoi=False, ncores=os.cpu_count())
         tempfile = opj(temp_dir, os.path.basename(outfile))
     else: 
         tempfile = outfile
-    if int(ncores) != os.cpu_count():
+    cmd = ('otbcli_Mosaic -ram 4096'
+                    ' -progress 1'
+                    ' -comp.feather large'
+                    ' -harmo.method band'
+                    ' -harmo.cost rmse'
+                    ' -tmpdir {}'
+                    ' -il {}'
+                    ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
+                                         tempfile, dtype)
+    )
 
-        cmd = ('cpulimit -l {} --monitor-forks -- otbcli_Mosaic -ram 4096'
-               ' -progress 1'
-               ' -comp.feather large'
-               ' -harmo.method band'
-               ' -harmo.cost rmse'
-               ' -tmpdir {}'
-               ' -il {}'
-               ' -out {} {}'.format(str(int(ncores)*100), temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
-                                    tempfile, dtype)
-               )
+    return_code = h.run_command(cmd, logfile)
+    if return_code != 0:
+        if os.path.isfile(tempfile):
+            os.remove(tempfile)
 
-        return_code = h.run_command(cmd, logfile)
-        if return_code != 0:
-            if os.path.isfile(tempfile):
-                os.remove(tempfile)
-            return
-
-    else:
-        cmd = ('otbcli_Mosaic -ram 4096'
-                        ' -progress 1'
-                        ' -comp.feather large'
-                        ' -harmo.method band'
-                        ' -harmo.cost rmse'
-                        ' -tmpdir {}'
-                        ' -il {}'
-                        ' -out {} {}'.format(temp_dir, filelist.replace("'", '').replace(",", '').strip(']['),
-                                             tempfile, dtype)
-        )
-
-        return_code = h.run_command(cmd, logfile)
-        if return_code != 0:
-            if os.path.isfile(tempfile):
-                os.remove(tempfile)
-
-            return
+        return
 
     if cut_to_aoi:
         
