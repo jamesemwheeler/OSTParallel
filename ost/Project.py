@@ -635,18 +635,36 @@ class Sentinel1_SLCBatch(Sentinel1):
                 glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
 
             i = 0
-            while len(self.burst_inventory) > nr_of_processed:
+            if self.ard_parameters['single ARD']['product type'] == 'Coherence_only':
+                i = 0
 
-                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(burst_to_ard.burst_to_ard)(*params.split(';')) for params in burst_ard_params)
+                while (len(self.burst_inventory) - len(unique(s1_batch.burst_inventory['bid']))) > nr_of_processed:
+                    Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(
+                        delayed(burst_to_ard.burst_to_ard)(*params.split(';')) for params in burst_ard_params)
 
-                nr_of_processed = len(
-                    glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
+                    nr_of_processed = len(
+                        glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
 
-                i += 1
+                    i += 1
 
-                # not more than 5 trys
-                if i == 5:
-                    break
+                    # not more than 5 trys
+                    if i == 5:
+                        break
+            else:
+                i = 0
+
+                while len(self.burst_inventory) > nr_of_processed:
+
+                    Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(burst_to_ard.burst_to_ard)(*params.split(';')) for params in burst_ard_params)
+
+                    nr_of_processed = len(
+                        glob.glob(opj(self.processing_dir, '*', '*', '.processed')))
+
+                    i += 1
+
+                    # not more than 5 trys
+                    if i == 5:
+                        break
 
             #pool = multiprocessing.Pool(processes=multiproc)
             #pool.map(run_burst_ard_multiprocess, burst_ard_params)
@@ -797,7 +815,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                     mosaic_timeseries_params = [line.strip() for line in fp]
                 fp.close()
                 ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
+                Parallel(n_jobs=1, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timeseries_params)
                 #def run_mosaic_timeseries_multiprocess(params):
                 #    from ost.mosaic import mosaic
                 #    mos.mosaic(*params.split(','))
@@ -854,7 +872,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                 fp.close()
 
                 ##replaced multiprocessing pools with joblib (only prints when run in ipython or command line though)
-                Parallel(n_jobs=multiproc, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timescan_params)
+                Parallel(n_jobs=1, verbose=53, backend=multiprocessing)(delayed(mos.mosaic)(*params.split(';')) for params in mosaic_timescan_params)
                 #def run_mosaic_timescan_multiprocess(params):
                 #    from ost.mosaic import mosaic
                 #    mos.mosaic(*params.split(','))
