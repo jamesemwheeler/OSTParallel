@@ -156,7 +156,7 @@ def convert_to_power(db_array):
 
 # convert power to dB
 def convert_to_db(pow_array):
-    print('Converting to dB')
+    #print('Converting to dB')
     pow_array[pow_array == 0] = np.nan
     pow_array[pow_array < 0] = 0.0000001
     db_array = 10 * np.log10(pow_array.clip(min=0.0000000000001))
