@@ -495,7 +495,7 @@ def timeseries_to_timescan(burst_inventory, processing_dir, temp_dir,
                 opj(timescan_dir, '.{}.processed'.format(product))):
                 print(' INFO: Timescans for burst {} already'
                       ' processed.'.format(burst))
-            
+                continue
             # get respective timeseries
             timeseries = opj(burst_dir, 
                              'Timeseries',
