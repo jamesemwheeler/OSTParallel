@@ -319,9 +319,9 @@ def visualise_rgb(filepath, shrink_factor=25):
 
 def get_min(file):
 
-    mins = {'bs.VV': -20, 'bs.VH': -25, 'bs.HH': -20, 'bs.HV': -25,
-            'coh.VV': 0.1, 'coh.VH': 0.1,
-            'pol.Alpha': 60, 'pol.Entropy': 0.1, 'pol.Anisotropy': 0.1}
+    mins = {'bs*VV': -20, 'bs*VH': -25, 'bs*HH': -20, 'bs*HV': -25,
+            'coh*VV': 0.1, 'coh*VH': 0.1,
+            'pol*Alpha': 60, 'pol*Entropy': 0.1, 'pol*Anisotropy': 0.1}
 
     for key, items in mins.items():
         if key in file:
@@ -330,9 +330,9 @@ def get_min(file):
 
 def get_max(file):
 
-    maxs = {'bs.VV': 0, 'bs.VH': -12, 'bs.HH': 0, 'bs.HV': -5,
-            'coh.VV': 0.8, 'coh.VH': 0.75,
-            'pol.Alpha': 80, 'pol.Entropy': 0.8, 'pol.Anisotropy': 0.8}
+    maxs = {'bs*VV': 0, 'bs*VH': -12, 'bs*HH': 0, 'bs*HV': -5,
+            'coh*VV': 0.8, 'coh*VH': 0.75,
+            'pol*Alpha': 80, 'pol*Entropy': 0.8, 'pol*Anisotropy': 0.8}
 
     for key, items in maxs.items():
         if key in file:
