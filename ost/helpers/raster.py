@@ -340,7 +340,7 @@ def get_max(file):
 
 
 def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5, plot=False,
-                   minimum_list=None, maximum_list=None, date=None):
+                   minimum_list=None, maximum_list=None, date=None, filetype=None):
 
     import matplotlib.pyplot as plt
 
@@ -409,7 +409,12 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
     arr = np.transpose(arr, [2, 0, 1])
 
     # update outfile's metadata
-    out_meta.update({'driver': 'JPEG',
+    if filetype:
+        out_meta.update({'driver': filetype,
+                         'dtype': 'uint8',
+                         'count': count})
+    else:
+        out_meta.update({'driver': 'JPEG',
                      'dtype': 'uint8',
                      'count': count})
 
