@@ -395,7 +395,6 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
         minimum_list.append(get_min(filelist[2]))
         maximum_list.append(get_max(filelist[2]))
         layer3[layer3 == 0] = np.nan
-    print('min values {} max values  {}' .format(minimum_list, maximum_list))
     # create empty array
     arr = np.zeros((int(out_meta['height']),
                     int(out_meta['width']),
