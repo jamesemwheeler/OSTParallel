@@ -331,9 +331,9 @@ def get_min(file):
 
 def get_max(file):
 
-    maxs = {'bs*VV': 0, 'bs*VH': -12, 'bs*HH': 0, 'bs*HV': -5,
-            'coh*VV': 0.8, 'coh*VH': 0.75,
-            'pol*Alpha': 80, 'pol*Entropy': 0.8, 'pol*Anisotropy': 0.8,
+    maxs = {'bs.VV': 0, 'bs.VH': -12, 'bs.HH': 0, 'bs.HV': -5,
+            'coh.VV': 0.8, 'coh.VH': 0.75,
+            'pol.Alpha': 80, 'pol.Entropy': 0.8, 'pol.Anisotropy': 0.8,
             'coh_IW1_VV': 0.8, 'coh_IW2_VV': 0.8, 'coh_IW3_VV': 0.8,
             'coh_IW1_VH': 0.75, 'coh_IW2_VH': 0.75, 'coh_IW3_VH': 0.75}
 
