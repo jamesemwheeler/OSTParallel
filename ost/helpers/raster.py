@@ -343,10 +343,13 @@ def get_max(file):
 
 
 def calc_min(band, stretch='minmax'):
+
     if stretch == 'percentile':
         band_min = np.percentile(band, 2)
-    else:
+    elif stretch == 'minmax':
         band_min = np.nanmin(band)
+    else:
+        print("Please select one of percentile or minmax for the stretch parameter")
 
     return band_min
 
@@ -354,9 +357,10 @@ def calc_min(band, stretch='minmax'):
 def calc_max(band, stretch='minmax'):
     if stretch == 'percentile':
         band_max = np.percentile(band, 98)
-    else:
+    elif stretch == 'minmax':
         band_max = np.nanmax(band)
-
+    else:
+        print("Please select one of percentile or minmax for the stretch parameter")
     return band_max
 
 def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5, plot=False,
