@@ -342,8 +342,25 @@ def get_max(file):
             return items
 
 
+def calc_min(band, stretch='minmax'):
+    if stretch == 'percentile':
+        band_min = np.percentile(band, 2)
+    else:
+        band_min = np.nanmin(band)
+
+    return band_min
+
+
+def calc_max(band, stretch='minmax'):
+    if stretch == 'percentile':
+        band_max = np.percentile(band, 98)
+    else:
+        band_max = np.nanmax(band)
+
+    return band_max
+
 def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5, plot=False,
-                   minimum_list=None, maximum_list=None, date=None, filetype=None):
+                   minimum_list=None, maximum_list=None, date=None, filetype=None, stretch=False):
 
     import matplotlib.pyplot as plt
 
@@ -365,8 +382,12 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
                 out_shape=(src.count, new_height, new_width),
                 resampling=resampling_factor    # 5 = average
                 )[0]
-        minimum_list.append(get_min(filelist[0]))
-        maximum_list.append(get_max(filelist[0]))
+        if stretch:
+            minimum_list.append(calc_min(layer1), stretch)
+            maximum_list.append(calc_max(layer1), stretch)
+        else:
+            minimum_list.append(get_min(filelist[0]))
+            maximum_list.append(get_max(filelist[0]))
         layer1[layer1 == 0] = np.nan
         
     if len(filelist) > 1:
@@ -375,8 +396,12 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
                     out_shape=(src.count, new_height, new_width),
                     resampling=resampling_factor    # 5 = average
                     )[0]
-            minimum_list.append(get_min(filelist[1]))
-            maximum_list.append(get_max(filelist[1]))
+            if stretch:
+                minimum_list.append(calc_min(layer2), stretch)
+                maximum_list.append(calc_max(layer2), stretch)
+            else:
+                minimum_list.append(get_min(filelist[1]))
+                maximum_list.append(get_max(filelist[1]))
             layer2[layer2 == 0] = np.nan
             count=3
             
@@ -392,8 +417,12 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
                     out_shape=(src.count, new_height, new_width),
                     resampling=resampling_factor    # 5 = average
                     )[0]
-        minimum_list.append(get_min(filelist[2]))
-        maximum_list.append(get_max(filelist[2]))
+        if stretch:
+            minimum_list.append(calc_min(layer3), stretch)
+            maximum_list.append(calc_max(layer3), stretch)
+        else:
+            minimum_list.append(get_min(filelist[2]))
+            maximum_list.append(get_max(filelist[2]))
         layer3[layer3 == 0] = np.nan
     # create empty array
     arr = np.zeros((int(out_meta['height']),
