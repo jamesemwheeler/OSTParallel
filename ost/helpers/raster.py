@@ -387,8 +387,8 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
                 resampling=resampling_factor    # 5 = average
                 )[0]
         if stretch:
-            minimum_list.append(calc_min(layer1), stretch)
-            maximum_list.append(calc_max(layer1), stretch)
+            minimum_list.append(calc_min(layer1, stretch))
+            maximum_list.append(calc_max(layer1, stretch))
         else:
             minimum_list.append(get_min(filelist[0]))
             maximum_list.append(get_max(filelist[0]))
@@ -401,8 +401,8 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
                     resampling=resampling_factor    # 5 = average
                     )[0]
             if stretch:
-                minimum_list.append(calc_min(layer2), stretch)
-                maximum_list.append(calc_max(layer2), stretch)
+                minimum_list.append(calc_min(layer2, stretch))
+                maximum_list.append(calc_max(layer2, stretch))
             else:
                 minimum_list.append(get_min(filelist[1]))
                 maximum_list.append(get_max(filelist[1]))
@@ -422,8 +422,8 @@ def create_rgb_jpeg(filelist, outfile=None, shrink_factor=1, resampling_factor=5
                     resampling=resampling_factor    # 5 = average
                     )[0]
         if stretch:
-            minimum_list.append(calc_min(layer3), stretch)
-            maximum_list.append(calc_max(layer3), stretch)
+            minimum_list.append(calc_min(layer3, stretch))
+            maximum_list.append(calc_max(layer3, stretch))
         else:
             minimum_list.append(get_min(filelist[2]))
             maximum_list.append(get_max(filelist[2]))
