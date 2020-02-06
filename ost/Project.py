@@ -283,7 +283,8 @@ class Sentinel1(Generic):
                exclude_marginal=True,
                full_aoi_crossing=True,
                mosaic_refine=True,
-               area_reduce=0.05):
+               area_reduce=0.05,
+               complete_coverage=True):
 
         self.refined_inventory_dict, self.coverages = refine.search_refinement(
                                        self.aoi,
@@ -292,7 +293,8 @@ class Sentinel1(Generic):
                                        exclude_marginal=exclude_marginal,
                                        full_aoi_crossing=full_aoi_crossing,
                                        mosaic_refine=mosaic_refine,
-                                       area_reduce=area_reduce)
+                                       area_reduce=area_reduce,
+                                       complete_coverage=complete_coverage)
 
         # summing up information
         print('--------------------------------------------')
