@@ -597,12 +597,12 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
         for i in range(1, nr_of_ts + 1):
 
             filelist = glob.glob(opj(
-                    processing_dir, '*', 'Timeseries', '{}.*{}.tif'
+                    processing_dir, '*', 'Timeseries', '{:02d}.*{}.tif'
                     .format(i, product)))
             filelist = [file for file in filelist if 'Mosaic' not in file]
             
 
-            print(' INFO: Creating timeseries mosaic {} for {}.'.format(
+            print(' INFO: Creating timeseries mosaic {:02d} for {}.'.format(
                     i, product))
 
             # create dates for timseries naming
@@ -619,10 +619,10 @@ def mosaic_timeseries(burst_inventory, processing_dir, temp_dir,
             filelist = ' '.join(filelist)
             
             if start == end:
-                outfile = opj(ts_dir, '{}.{}.{}.tif'.format(i, start, product))
+                outfile = opj(ts_dir, '{:02d}.{}.{}.tif'.format(i, start, product))
                 
             else:
-                outfile = opj(ts_dir, '{}.{}-{}.{}.tif'.format(i, start, end, product))
+                outfile = opj(ts_dir, '{:02d}.{}-{}.{}.tif'.format(i, start, end, product))
             
             check_file = opj(
                 os.path.dirname(outfile),
