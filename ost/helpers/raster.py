@@ -274,7 +274,7 @@ def create_tscan_vrt(timescan_dir, proc_file):
         # else
         i += 1
         outfile = opj(timescan_dir,
-                      '{}.{}.{}.tif'.format(i, product, metric))
+                      '{:02d}.{}.{}.tif'.format(i, product, metric))
         outfiles.append(outfile)
         # otherwise rename the file
         shutil.move(infile, outfile)

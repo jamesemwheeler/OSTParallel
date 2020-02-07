@@ -221,7 +221,7 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
             infile = glob.glob(opj('{}.data'.format(out_stack),
                                    '*{}*{}_{}*img'.format(pol, mst, slv)))[0]
             
-            outfile = opj(out_dir, '{}.{}.{}.{}.{}.tif'.format(
+            outfile = opj(out_dir, '{:02d}.{}.{}.{}.{}.tif'.format(
                 i, outMst, outSlv, product, pol))
             
             ras.mask_by_shape(infile, outfile, extent, 
@@ -257,7 +257,7 @@ def ard_to_ts(list_of_files, processing_dir, temp_dir,
                                    '*{}*{}*img'.format(pol, date)))[0]
         
             # create outfile
-            outfile = opj(out_dir, '{}.{}.{}.{}.tif'.format(
+            outfile = opj(out_dir, '{:02d}.{}.{}.{}.tif'.format(
                 i, outDate, product, pol))
     
             ras.mask_by_shape(infile, outfile, extent,
