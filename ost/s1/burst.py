@@ -704,8 +704,8 @@ def mosaic_timescan(burst_inventory, processing_dir, temp_dir, proc_file,
                 '*{}.{}.tif'.format(product, metric))
         )
 
-        #if not len(filelist) >= 2:
-        #    continue
+        if not len(filelist) >= 1:
+            continue
         
         filelist = ' '.join(filelist)
 
