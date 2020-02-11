@@ -237,8 +237,11 @@ class Sentinel1(Generic):
         search.scihub_catalogue(query, self.inventory_file, append,
                                 uname, pword)
         
-         # read inventory into the inventory attribute
-        self.read_inventory()
+        if os.file.exists(self.inventory_file):
+            # read inventory into the inventory attribute
+            self.read_inventory()
+        else:
+            print('No images found in the AOI for this date range')
 
     def read_inventory(self):
         '''Read the Sentinel-1 data inventory from a OST invetory shapefile
