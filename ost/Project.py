@@ -237,7 +237,7 @@ class Sentinel1(Generic):
         search.scihub_catalogue(query, self.inventory_file, append,
                                 uname, pword)
         
-        if os.file.exists(self.inventory_file):
+        if os.path.exists(self.inventory_file):
             # read inventory into the inventory attribute
             self.read_inventory()
         else:
