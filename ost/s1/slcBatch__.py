@@ -11,7 +11,6 @@ import gdal
 from os.path import join as opj
 
 # ost imports
-from . import ts
 from ost import S1Scene
 from . import burst2Ard
 from ..helpers import raster as ras

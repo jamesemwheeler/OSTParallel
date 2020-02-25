@@ -95,7 +95,7 @@ def slcBurst2CohPolArd(mstFile, slvFile, logFile,
     
     # geocode
     outTc = opj(tmpDir, '{}_coh'.format(fileIdMst))
-    slc2Ard.slcTC('{}.dim'.format(outCoh),outTc, logFile, outResolution)
+    slc2Ard.slcTC('{}.dim'.format(outCoh), outTc, logFile, outResolution)
 
     shutil.move('{}.data'.format(outTc), opj(outDir, '{}_coh.data'.format(fileIdMst)))
     shutil.move('{}.dim'.format(outTc), opj(outDir, '{}_coh.dim'.format(fileIdMst)))

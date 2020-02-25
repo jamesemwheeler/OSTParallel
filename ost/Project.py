@@ -2,7 +2,6 @@
 
 # import standard libs
 import os
-import sys
 import importlib
 import json
 import glob
@@ -13,10 +12,9 @@ import multiprocessing
 from os.path import join as opj
 from datetime import datetime
 from shapely.wkt import loads
-import gdal
 from joblib import Parallel, delayed
 from ost.helpers import vector as vec, raster as ras
-from ost.s1 import search, refine, download, burst, grd_batch, burst_to_ard
+from ost.s1 import search, refine, download, burst, grd_batch
 from ost.helpers import scihub, helpers as h
 from ost.multitemporal import ard_to_ts, common_extent, common_ls_mask, timescan as tscan
 from ost.mosaic import mosaic as mos
@@ -581,7 +579,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                                     cut_to_aoi,
                                     exec_file,
                                     ncores
-            )
+                                    )
 
         if mosaic and timescan:
             burst.mosaic_timescan(self.burst_inventory,
@@ -591,7 +589,7 @@ class Sentinel1_SLCBatch(Sentinel1):
                                   cut_to_aoi,
                                   exec_file,
                                   ncores
-            )
+                                  )
 
     def create_timeseries_animation(self, timeseries_dir, product_list, outfile,
                                     shrink_factor=1, resampling_factor=5, duration=1,
@@ -610,7 +608,6 @@ class Sentinel1_SLCBatch(Sentinel1):
         Exec files should be recreated at each step to add parameters such as filenames, extents, that have been
         generated at previous steps
         '''
-        from ost.s1 import burst_to_ard
         #list exec files
         exec_burst_to_ard = exec_file + '_burst_to_ard.txt'
         exec_timeseries = exec_file + '_timeseries.txt'
@@ -1069,11 +1066,11 @@ class Sentinel1_GRDBatch(Sentinel1):
             i = 0
             while nr_of_ts > nr_of_processed:
                 
-                grd_batch.ards_to_timeseries(inventory_df, 
-                                    self.processing_dir, 
-                                    self.temp_dir, 
-                                    self.proc_file, 
-                                    exec_file)
+                grd_batch.ards_to_timeseries(inventory_df,
+                                             self.processing_dir,
+                                             self.temp_dir,
+                                             self.proc_file,
+                                             exec_file)
                 
                 nr_of_processed = len(
                     glob.glob(opj(self.processing_dir, '*',
@@ -1130,8 +1127,8 @@ class Sentinel1_GRDBatch(Sentinel1):
 
         if mosaic and timescan and not subset:
             grd_batch.mosaic_timescan(inventory_df,
-                                  self.processing_dir,
-                                  self.temp_dir,
-                                  self.proc_file,
-                                  cut_to_aoi
-            )
+                                      self.processing_dir,
+                                      self.temp_dir,
+                                      self.proc_file,
+                                      cut_to_aoi
+                                      )

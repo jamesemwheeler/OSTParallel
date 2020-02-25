@@ -11,7 +11,6 @@ import gdal
 from os.path import join as opj
 
 # ost imports
-from . import ts
 from . import metadata
 from . import burst2Ard
 from ..helpers import raster as ras
@@ -91,8 +90,8 @@ def burst2ArdBatch(inputDf, dwnDir, prcDir, tmpDir, procParams):
             if end is True:
                 # run the single burst routine (i.e. without coherence)
                 burst2Ard.slcBurst2PolArd(inFileMst, logFile,
-                                subSwath, burstMst, out, fileIdMst,
-                                tmpDir, prdType, outResolution)
+                                          subSwath, burstMst, out, fileIdMst,
+                                          tmpDir, prdType, outResolution)
 
             else:
                 # read slave burst
@@ -108,9 +107,9 @@ def burst2ArdBatch(inputDf, dwnDir, prcDir, tmpDir, procParams):
 
                 # run routine
                 burst2Ard.slcBurst2CohPolArd(inFileMst, inFileSlv, logFile,
-                                   subSwath, burstMst, burstSlv,
-                                   out, fileIdMst, fileIdSlv,
-                                   tmpDir, prdType, outResolution)
+                                             subSwath, burstMst, burstSlv,
+                                             out, fileIdMst, fileIdSlv,
+                                             tmpDir, prdType, outResolution)
 
 
 def ard2Ts(burstDf, prcDir, tmpDir, procDict):

@@ -5,7 +5,6 @@
 
 import os
 from os.path import join as opj
-import imp
 import glob
 import json
 import itertools
@@ -389,7 +388,7 @@ def burst_ards_to_timeseries(burst_inventory, processing_dir, temp_dir,
                 print(' INFO: Creating common Layover/Shadow mask'
                     ' for burst {}'.format(burst))
                 common_ls_mask.mt_layover(list_of_layover, out_ls, temp_dir,
-                                      extent, ard_mt['apply ls mask'])
+                                          extent, ard_mt['apply ls mask'])
         
     # create timeseries
     for burst in burst_inventory.bid.unique():

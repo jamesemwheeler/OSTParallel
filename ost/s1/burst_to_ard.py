@@ -773,9 +773,9 @@ def burst_to_ard(master_file,
         speckle_log = opj(out_dir, '{}_speckle.err_log'.format(
             master_burst_id))
         return_code = common._speckle_filter('{}.dim'.format(out_cal),
-                                      speckle_import, speckle_log, 
-                                      ard['speckle filter'], ncores
-        )
+                                             speckle_import, speckle_log,
+                                             ard['speckle filter'], ncores
+                                             )
         
         # remove input 
         h.delete_dimap(out_cal)
@@ -798,7 +798,7 @@ def burst_to_ard(master_file,
             master_burst_id))
         # do the TF
         return_code = common._terrain_flattening('{}.dim'.format(out_cal),
-                                          out_rtc, rtc_log, ard['dem'], ncores)
+                                                 out_rtc, rtc_log, ard['dem'], ncores)
         
         # remove tmp files
         h.delete_dimap(out_cal)
@@ -856,7 +856,7 @@ def burst_to_ard(master_file,
         out_ls = opj(temp_dir, '{}_LS'.format(master_burst_id))
         ls_log = opj(out_dir, '{}_LS.err_log'.format(master_burst_id))
         return_code = common._ls_mask('{}.dim'.format(out_cal), out_ls, ls_log,
-                               ard['resolution'], ard['dem'], ncores)
+                                      ard['resolution'], ard['dem'], ncores)
         if return_code != 0:
             h.delete_dimap(out_ls)
             return return_code

@@ -128,4 +128,4 @@ def download_sentinel1(inventory_df, download_dir, mirror=None, concurrent=2,
                             uname, pword, concurrent)
     elif int(mirror) == 5:    # ASF WGET
         asf_wget.batch_download(inventory_df, download_dir,
-                           uname, pword, concurrent)
+                                uname, pword, concurrent)
